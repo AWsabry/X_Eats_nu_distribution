@@ -1,0 +1,45 @@
+{% extends "auth_base.html" %} {% load static %} {% block auth_content %}
+<!-- =============================================
+				Signin Page
+============================================== -->
+
+<div class="signUp-page signUp-standard pt-250 pb-100 md-pt-200">
+  <div class="shape-wrapper"></div>
+  <!-- /.shape-wrapper -->
+  <div class="signUp-illustration">
+    <img src="{% static 'images/logo/01.png' %}" alt="" />
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7 ml-auto">
+        <div class="signin-form-wrapper">
+          <div class="title-area">
+            <center><h3>Your Email Has been Activated !</h3>
+            <br>
+            <img src="{% static 'images/shape/checked.png' %}" height= "250" width="250" alt="" /></center>
+          </div>
+
+          <h5><b>You Can Login Now !</b> </h5><br>
+          <p> Well, we are currently working inside Nile University in Egypt, the orders will be distributd
+            from our booth inside the NU campus everyday from about 2:00 PM till 3:00 PM +02 GTC, if you faced any problem you can contact us 
+            via email.<br> Email :  <a href="mailto:support@x-eats.com">support@x-eats.com </a> or contact us through out our <a href="mailto:support@x-eats.com">Facebook Page</a>
+
+            {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+            <li>* {{ message }}</li>
+            {% endfor %}
+          </ul>
+          <br /><br />
+          {% endif %}
+        </p>
+        <br>
+        <center><a href="{% url 'Register_Login:login' %}" class="dark-button-one checkout-process">Login </a></center>
+        </div>
+        <!-- /.signin-form-wrapper -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /.signUp-page -->
+{% endblock auth_content %}

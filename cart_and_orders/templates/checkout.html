@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="checkout-section pt-90 pb-100">
+    <div class="container">
+   <br><br>
+        <form method ="POST" class="checkout-form">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-lg-7">
+                    <h2 class="main-title">Order Details</h2>
+                    <div class="col-12">
+                        {% if messages %}
+                        <ul class="messages">
+                          {% for message in messages %}
+                          <li>* {{ message }}</li>
+                          {% endfor %}
+                        </ul>
+                        <br /><br />
+                        {% endif %}
+                        <div class="other-note-area">
+                            <p>Order Note (Optional)</p>
+                            <textarea name = "comment" placeholder="eg. Shawerma Without Garlic" ></textarea>
+                        </div> <!-- /.other-note-area -->
+                    </div>
+                </div> <!-- /.col- -->
+
+                <div class="col-lg-5">
+                    <div class="order-confirm-sheet">
+                        <h2 class="main-title">Summary</h2>
+                        <div class="order-review">
+                            <table class="product-review">
+                                <tbody>
+
+                                    {% for cartItems in cartItems %}
+                                    <tr>
+                                        <th>
+                                            <span>{{cartItems.product.name}} x{{cartItems.quantity}}</span>
+                                        </th>
+                                        
+                                        <td><span>EGP {{cartItems.price}}</span></td>
+                                    </tr>
+                                    {% endfor %}
+                                    
+                                    {% for cart in cart %}
+                                  
+                                    {% if cart.Promo_code_user == None %}
+
+                                    {% else %}
+
+                                    <tr>
+                                        <th>
+                                            <span>PromoCode</span>
+                                        </th>
+                                        
+                                        <td><span>"{{cart.Promo_code_user}}" </span></td>
+                                    </tr>
+
+                                    {% endif %}
+
+                                    {% endfor %}
+                                    {% for cart in cart %}
+                                    <tr>
+                                        <th>
+                                            <span>Subtotal</span>
+                                        </th>
+                                        <td><span>EGP {{cart.total_price}}</span></td>
+                                    </tr>
+                                    {% endfor %}
+                                    
+                                    {% comment %} {% for profile in profile %}
+                                    {% if profile.Wallet == 0 %}
+                                    {% else %}
+                                    <tr>
+                                        <th>
+                                            <span>Wallet</span>
+                                        </th>
+                                        <td><span>- EGP {{profile.Wallet}}</span></td>
+                                    </tr>
+                                    {% endif %}
+                                    {% endfor %} {% endcomment %}
+                                    {% for delivery in delivery %}
+                                    <tr>
+                                        <th>
+                                            <span>Shipping</span>
+                                        </th>
+                                        <td><span>EGP {{delivery.delivery_fees}}</span></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot>
+                                    {% for cart in cart %}
+                                    <tr>
+                                        <th><span>Total</span></th>
+                                        <td><span>EGP {{cart.total_after_delivery}}</span></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tfoot>
+                            </table> <!-- /.product-review -->
+                            
+                            <p class="policy-text">Your personal data will be use for your order, support your experience through this website.</p>
+                            
+                            {% if now < time_out.end_order  %}
+                            
+                                {% if now > time_out.start_order %}
+
+                                <div>
+                                    <button class="dark-button-one">Place Order</button>
+                                </div>
+                            {% else %}
+
+                            <h5>Time is Out !<h5>
+
+                            {% endif %}
+
+                            {% else %}
+
+                            <h5>Time is Out !<h5>
+
+                            
+                            {% endif %}
+                            
+                        </div> <!-- /.order-review -->
+                    </div> <!-- /.order-confirm-sheet -->
+                </div>
+            </div> <!-- /.row -->
+        </form> <!-- /.checkout-form -->
+    </div> <!-- /.container -->
+</div> <!-- /.checkout-section -->
+
+{% endblock content %}

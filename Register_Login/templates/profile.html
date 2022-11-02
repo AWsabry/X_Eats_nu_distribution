@@ -1,0 +1,143 @@
+{% extends "base.html" %} {% block content %} {% load static %}
+
+<!-- 
+			=============================================
+				Cart Page
+			============================================== 
+			-->
+<div class="cart-section pt-90 pb-100">
+  <div class="main-container">
+    <br /><br /><br /><br />
+    <form method="POST" class="cart-list-form">
+      {% csrf_token %}
+      <div class="table-responsive">
+        <table class="table">
+          {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+            <li>* {{ message }}</li>
+            {% endfor %}
+          </ul>
+          <br /><br />
+          {% endif %}
+          <h4><a href="blog-details-v1.html">Profile.</a></h4>
+          <br>
+          {% for Profile in Profile %}
+          <div>
+        <h6>  Name : {{Profile.first_name}} {{Profile.last_name}} </h6>
+            <br>
+        <h6> Email : {{Profile.email}} </h6>
+            <br>
+            <h6>Wallet : {{Profile.Wallet}} EGP </h6>
+          </div>
+          {% endfor %}
+          <br> <br>
+          <h4><a href="blog-details-v1.html">Order History.</a></h4>
+          <br><br>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Price</th>
+              <th>Price After Delivery</th>
+              {% comment %} <th>Order ID</th> {% endcomment %}
+              <th>Paid</th>
+              {% comment %} <th>Products</th> {% endcomment %}
+            </tr>
+          </thead>
+
+
+          <tbody>
+            {% for order in order %}
+            <tr>
+         
+              <td class="product-info">
+                <a href="#" class="product-name">{{order.ordered_date}}</a>
+              </td>
+
+              <td class="price"><span>EGP {{order.totalPrice}}</span></td>
+       
+              <td class="price total-price">
+                <span>EGP {{order.total_price_after_delivery}}</span>
+              </td>
+              {% comment %} <td class="price total-price">
+                <span>{{order.id}}</span>
+              </td> {% endcomment %}
+
+              <td class="price total-price">
+                {% if order.paid == True %}
+                <center><span> <h6>Paid Successfully </h6></span></center>
+                {% else %}
+                <span>Not Paid</span>
+
+
+                {% endif %}
+              
+              </td>
+              <td class="price total-price">
+                <span>{{cartItems.product.name}}</span>
+              </td>
+              
+            </tr>
+        
+
+            {% endfor %}
+          </tbody>
+          
+          {% comment %} <tbody>
+            {% for cartItems in cartItems %}
+            <tr>
+              <td class="product-thumbnails">
+                <a href="#" class="product-img"
+                  ><img
+                    src="{{cartItems.product.category.image.url}}"
+                    alt=""
+                    width="80"
+                    height="80"
+                /></a>
+              </td>
+              <td class="product-info">
+                <a href="#" class="product-name">{{cartItems.product.name}}</a>
+                <div class="serial">{{cartItems.product.productslug}}</div>
+              </td>
+
+              <td class="price"><span>EGP {{cartItems.price}}</span></td>
+              <td class="quantity">
+                <span>{{cartItems.quantity}}</span>
+              </td>
+              <td class="price total-price">
+                <span>EGP {{cartItems.totalOrderItemPrice}}</span>
+              </td>
+              <td class="price total-price">
+                <span>{{cartItems.orderId}}</span>
+              </td>
+
+              <td class="price total-price">
+                {% if cartItems.orderId.paid == True %}
+                <span>Paid</span>
+                {% else %}
+                <span>Not Paid</span>
+
+
+                {% endif %}
+              
+              </td>
+              
+              <td class="price total-price">
+                <span>{{cartItems.created}}</span>
+              </td>
+              
+            </tr>
+        
+
+            {% endfor %}
+          </tbody> {% endcomment %}
+        </table>
+      </div>
+      <!-- /.table-responsive -->
+
+  </div>
+  <!-- /.main-container -->
+</div>
+<!-- /.cart-section -->
+
+{% endblock content %}

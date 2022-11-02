@@ -1,0 +1,147 @@
+{% extends "base.html" %} {% block content %} {% load static %}
+
+<!-- 
+			=============================================
+				Inner Banner
+			============================================== 
+			-->
+<div
+  class="inner-banner pos-r banner-bg bg-style-two"
+  style="background-image: url(static/images/EAT.png)"
+>
+  <div class="opacity">
+    <div class="container">
+     
+      <h1
+        class="banner-main-title pt-15 pb-45 md-pb-20 wow fadeInUp animated"
+        data-wow-delay="0.4s"
+      >
+      {% for restaurant in restaurant %}
+        <span style="color: rgb(9, 134, 211)" data-wow-delay="0.9s">{{restaurant.Name}}</span>
+        {% endfor %}
+      </h1>
+      {% if searching %}
+
+      {% else %}
+      <center><h4>No Results for " {{searched}} "</h4></center>
+
+      {% endif %}
+    </div>
+  </div>
+</div>
+<!-- /.inner-banner -->
+
+<!-- 
+			=============================================
+				E-Commerce Product Area
+			============================================== 
+			-->
+<div class="full-width-container pt-150 pb-180 md-pb-120 md-pt-120">
+  {% if searching %}
+  {% else %}
+  <right><h6> There's no results for "{{searched}}", but look what we've got for you !</h6></right>
+  {% endif %}
+  <div class="row">
+    <div class="col-xl-9 col-lg-8 order-lg-last">
+      <!-- SHOP SHOWCASE -->
+      <div class="product-showcase">
+        <div class="row gutter-80">
+
+        {% if searching %}
+
+
+        {% for searching in searching %}
+          <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
+            <div class="single-product-case">
+              <div class="img-holder">
+                <img src=" {{searching.category.image.url}}" alt="" />
+                <a href="{{searching.get_absolute_url}}" class="cart-button"
+                  >View Details</a
+                >
+              </div>
+              <div class="info">
+                <a href="{{searching.get_absolute_url}}" class="product-name"
+                  >{{searching.name}}</a>
+
+                  <div class="price">L.E {{searching.price}}</div>
+              
+              </div>
+            </div>
+            <!-- /.single-product-case -->
+          </div>
+
+          {% empty %}
+          <center><h4>No Products to show !</h4></center>
+          
+        {% endfor %}
+          <!-- /.col- -->
+          
+          {% else %}
+         
+          {% for all_products in all_products %}
+            {% if all_products.Most_Popular == True %}
+          <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
+            <div class="single-product-case">
+              <div class="img-holder">
+                <img src=" {{all_products.category.image.url}}" alt="" />
+                <a href="{{all_products.get_absolute_url}}" class="cart-button"
+                  >View Details</a
+                >
+              </div>
+              <div class="info">
+                <a href="{{all_products.get_absolute_url}}" class="product-name"
+                  >{{all_products.name}}</a>
+
+                  <div class="price">L.E {{all_products.price}}</div>
+              
+              </div>
+            </div>
+            <!-- /.single-product-case -->
+          </div>
+         
+
+          {% endif %}
+
+          
+          
+        {% endfor %}
+
+          
+          
+        {% endif %}
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.product-showcase -->
+    </div>
+    <!-- /.col- -->
+
+    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8 col-12 order-lg-first">
+      <div class="theme-sidebar-widget">
+        <div class="single-block mb-80 mt-95">
+          <form method = "GET" action="{{searching.get_absolute_searched_url}}" class="sidebar-search">
+            {% for  restaurant in  restaurant%}
+            <input name="searched" type="text" placeholder="Search in {{restaurant.Name}}" />
+            {% endfor %}
+            <button type= "submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+          </form>
+        </div>
+        <!-- /.single-block -->
+        <div class="single-block mb-80 main-menu-list">
+          <h4 class="sidebar-title">Categories</h4>
+          <ul class="list-item">
+			{% for categories in categories %}
+            <li><a href="{{categories.get_absolute_url_category}}">{{categories.display_name}}</a></li>
+			{% endfor %}
+          </ul>
+        </div>
+        <!-- /.single-block -->
+      </div>
+      <!-- /.theme-sidebar-widget -->
+    </div>
+  </div>
+  <!-- /.row -->
+</div>
+<!-- /.full-width-container -->
+
+{% endblock content %}

@@ -1,0 +1,119 @@
+{% extends "base.html" %} {% block content %} {% load static %}
+
+<!-- 
+			=============================================
+				Inner Banner
+			============================================== 
+			-->
+<div
+  class="inner-banner pos-r banner-bg bg-style-two"
+  style="background-image: url(../static/images/shop/bbg2.png)"
+>
+  <div class="opacity">
+    <div class="container">
+      {% for categories in categories %}
+      <h2><span style="color: rgb(9, 134, 211)" data-wow-delay="0.9s">{{categories.Restaurant.Name}} {{categories.display_name}}'s Menu</span>
+      </h2>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<!-- /.inner-banner -->
+
+<!-- 
+			=============================================
+				E-Commerce Product Area
+			============================================== 
+			-->
+<div class="full-width-container pt-150 pb-180 md-pb-120 md-pt-120">
+  <div class="row">
+    <div class="col-xl-9 col-lg-8 order-lg-last">
+		
+      <div
+        class="product-filter-area d-flex justify-content-between align-items-center"
+      >
+	  {% for products in products %} {% empty %}
+	  <center><h4>No Products to show !</h4></center>
+	  {% endfor %}
+       
+        <div
+          class="large-filter-area d-flex justify-content-between align-items-center"
+        >
+	
+	
+	</div>
+        <!-- /.large-filter-area -->
+
+        <div class="shop-demo-filter">;</div>
+      </div>
+
+      <!-- /.product-filter-area -->
+      <!-- SHOP SHOWCASE -->
+      <div class="product-showcase">
+        <div class="row gutter-80">
+          {% for products in products %}
+
+          <div class="col-xl-4 col-lg-6 col-md-4 col-sm-6">
+            <div class="single-product-case">
+              <div class="img-holder">
+                <img src=" {{products.category.image.url}}" alt="" />
+                <a href="{{products.get_absolute_url}}" class="cart-button"
+                  >View Details</a
+                >
+              </div>
+              <div class="info">
+                <a href="{{products.get_absolute_url}}" class="product-name"
+                  >{{products.name}}</a
+                >
+                <div class="price">L.E {{products.price}}</div>
+              </div>
+            </div>
+            <!-- /.single-product-case -->
+          </div>
+          <!-- /.col- -->
+
+          {% endfor %}
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.product-showcase -->
+    </div>
+    <!-- /.col- -->
+
+    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-8 col-12 order-lg-first">
+      <div class="theme-sidebar-widget">
+        <div class="single-block mb-80 mt-95">
+          {% for products in products %}
+         
+          <form method = "GET" action="{{products.get_absolute_searched_url}}" class="sidebar-search">
+            {% endfor %}
+            
+          {% for restaurant in restaurant %}
+          <input name="searched" type="text" placeholder="Search in {{restaurant.Name}}" />
+          {% endfor %}
+			  <button type= "submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+			</form>
+		  </div>
+        <!-- /.single-block -->
+        <div class="single-block mb-80 main-menu-list">
+          <h4 class="sidebar-title">Categories</h4>
+          <ul class="list-item">
+            {% for category_list in category_list %}
+            <li>
+              <a href="{{category_list.get_absolute_url_category}}"
+                >{{category_list.display_name}}</a
+              >
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        <!-- /.single-block -->
+      </div>
+      <!-- /.theme-sidebar-widget -->
+    </div>
+  </div>
+  <!-- /.row -->
+</div>
+<!-- /.full-width-container -->
+
+{% endblock content %}

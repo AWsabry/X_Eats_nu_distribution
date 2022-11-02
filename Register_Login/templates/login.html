@@ -1,0 +1,83 @@
+{% extends "auth_base.html" %} {% load static %} {% block auth_content %}
+<!-- =============================================
+				Signin Page
+============================================== -->
+
+<div class="signUp-page signUp-standard pt-250 pb-100 md-pt-200">
+  <div class="shape-wrapper"></div>
+  <!-- /.shape-wrapper -->
+  <div class="signUp-illustration">
+    <img src="{% static 'images/logo/01.png' %}" alt="" />
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7 ml-auto">
+        <div class="signin-form-wrapper">
+          <div class="title-area">
+            <h3>Login.</h3>
+          </div>
+          <!-- /.title-area -->
+          {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+            <li>* {{ message }}</li>
+            {% endfor %}
+          </ul>
+          <br /><br />
+          {% endif %}
+          <form method="POST" id="login-form">
+            {% csrf_token %}
+
+            <div class="row">
+              <div class="col-12">
+                <div class="input-group">
+                  <input type="email" name="email" id="email" required />
+                  <label>Email</label>
+                </div>
+                <!-- /.input-group -->
+              </div>
+              <!-- /.col- -->
+              <div class="col-12">
+                <div class="input-group">
+                  <input
+                    type="password"
+                    name="password"
+                    id="password"
+                    required
+                  />
+                  <label>Password</label>
+                </div>
+                <!-- /.input-group -->
+              </div>
+              <!-- /.col- -->
+            </div>
+            <!-- /.row -->
+            <div
+              class="agreement-checkbox d-flex justify-content-between align-items-center"
+            >
+              <div>
+                <input type="checkbox" id="remember" />
+              </div>
+              <a href="{% url 'Register_Login:password_reset' %}">Forget Password?</a>
+            </div>
+            <button
+              class="theme-btn solid-button-one button-rose radius3"
+			  type="submit"
+              name="signin"
+              id="signin"
+            >
+              Login
+            </button>
+          </form>
+          <p class="signUp-text">
+            Don’t have any account?
+            <a href="{% url 'Register_Login:Register'%}">Sign up</a> now.
+          </p>
+        </div>
+        <!-- /.signin-form-wrapper -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /.signUp-page -->
+{% endblock auth_content %}

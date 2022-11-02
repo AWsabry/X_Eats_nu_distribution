@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+			<div class="text-inner-banner-one pos-r">
+				<div class="shape-wrapper">
+					<svg class="img-shape shape-one">
+					<path fill-rule="evenodd"  fill="rgb(255, 223, 204)"
+					 d="M6.000,12.000 C9.314,12.000 12.000,9.314 12.000,6.000 C12.000,2.686 9.314,-0.000 6.000,-0.000 C2.686,-0.000 -0.000,2.686 -0.000,6.000 C-0.000,9.314 2.686,12.000 6.000,12.000 Z"/>
+					</svg>
+					<svg class="img-shape shape-two">
+					<path fill-rule="evenodd"  fill="rgb(182, 255, 234)"
+					 d="M6.000,12.000 C9.314,12.000 12.000,9.314 12.000,6.000 C12.000,2.686 9.314,-0.000 6.000,-0.000 C2.686,-0.000 -0.000,2.686 -0.000,6.000 C-0.000,9.314 2.686,12.000 6.000,12.000 Z"/>
+					</svg>
+					<svg class="img-shape shape-three">
+					<path fill-rule="evenodd"  fill="rgb(181, 198, 255)"
+					 d="M12.000,24.000 C18.627,24.000 24.000,18.627 24.000,12.000 C24.000,5.372 18.627,-0.000 12.000,-0.000 C5.372,-0.000 -0.000,5.372 -0.000,12.000 C-0.000,18.627 5.372,24.000 12.000,24.000 Z"/>
+					</svg>
+					<svg class="img-shape shape-four">
+					<path fill-rule="evenodd"  fill="rgb(255, 156, 161)"
+					 d="M7.500,15.000 C11.642,15.000 15.000,11.642 15.000,7.500 C15.000,3.358 11.642,-0.000 7.500,-0.000 C3.358,-0.000 -0.000,3.358 -0.000,7.500 C-0.000,11.642 3.358,15.000 7.500,15.000 Z"/>
+					</svg>
+					<svg class="img-shape shape-five">
+					<path fill-rule="evenodd"  fill="rgb(178, 236, 255)"
+					 d="M12.500,25.000 C19.403,25.000 25.000,19.403 25.000,12.500 C25.000,5.596 19.403,-0.000 12.500,-0.000 C5.596,-0.000 -0.000,5.596 -0.000,12.500 C-0.000,19.403 5.596,25.000 12.500,25.000 Z"/>
+					</svg>
+				</div> <!-- /.shape-wrapper -->
+				<div class="container">
+					<p>Team</p>
+					<h2 class="pt-30 pb-15">Welcome our Team !</h2>
+					<p class="sub-heading">From a team of passionate creators working side-by-side designing solution for this awesome Place NU !</p>
+				</div>
+			</div> <!-- /.text-inner-banner-one -->
+
+			
+
+
+			<!-- 
+			=============================================
+				Our Team Minimal
+			============================================== 
+			-->
+			<div class="team-minimal our-team pb-70 md-pb-60">
+				<div class="container">
+					<div class="row">
+						{% for team_member in team_member %}
+						<div class="col-lg-4 col-md-6">
+                           
+							<div class="single-team-member">
+								<div class="wrapper">
+									<div class="img-box">
+										<img src="{{team_member.profile_pic.url}}" alt="">
+										<div class="hover-content">
+											<ul>
+												<li><a href="{{team_member.Facebook_Link}}"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+												<li><a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a></li>
+											</ul>
+										</div> <!-- /.hover-content -->
+									</div>
+									<div class="info-meta">
+										<h6 class="name">{{team_member.first_name}} {{team_member.last_name}}</h6>
+										<span>{{team_member.job_title}}</span>
+									</div>
+								</div>
+							</div> <!-- /.single-team-member -->
+
+                            
+
+						</div> <!-- /.col- -->
+						{% endfor %}
+						
+					</div> <!-- /.row -->
+				</div> <!-- /.container -->
+			</div> <!-- /.team-minimal -->
+
+
+            {% endblock content %}

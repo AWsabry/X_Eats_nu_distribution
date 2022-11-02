@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block content %}
+{% load static %}
+
+
+
+			<!-- 
+			=============================================
+				Shop Details
+			============================================== 
+			-->
+			<br><br>
+			<div class="shop-details pt-150 pb-200">
+				<div class="container">
+					<div class="procuct-details">
+						<div class="row">
+							{% for products in products %}
+							<div class="col-md-6 col-xs-12">
+								<div class="tab-content">
+									<div id="menu0" class="tab-pane fade show active"><img src="{{products.category.image.url}}" alt=""></div>
+								</div>
+						
+							</div>
+							
+							<div class="col-md-6 col-xs-12">
+								<form method = "POST">
+									{% csrf_token %}
+								<div class="product-info">
+									<h3 class="product-name">{{products.name}}</h3>
+									
+									<strong class="price">EGP {{products.price}}</strong>
+									<ul class="availability">
+										<li>Available</li>
+										<li>|</li>
+										<li>from <span>6:00 AM</span> till <span>1:00 PM</span> </li>
+										{% if  products.Restaurant == None %}
+										<div></div>
+										{% else %}
+										<br>
+										<li>Restaurant: {{products.Restaurant.Name}} </li>
+										{% endif %}
+										<br>
+										
+										{% if now < time_out.end_order %}
+
+											{% if now > time_out.start_order %}
+											
+											<li> Ordering Time: <div class="input-group">
+												<select name="timing" id="timing">
+												  {% if now < start_1_PM.end_order %}
+													  {% if now < start_1_PM.end_order %}
+													  <option value="1:00 PM">1</option>
+												  {% endif %}
+												
+												  {% endif %}
+												
+												  <option value="3:00 PM">3</option>
+								
+												</select>
+											  </div>
+											</li>
+
+											{% endif %}
+										{% endif %}
+										
+
+										
+										
+									
+										
+									</ul> <!-- /.availability -->
+									<p>{{products.description}}</p>
+
+									<div class="customize-order d-sm-flex align-items-top">
+										<div class="quantity">
+											
+											<h6>Quantity</h6>
+											<ul class="clearfix">
+												
+													{% csrf_token %}
+
+													<div class="input-group">
+														<input
+														class="uk-input-qty"
+														  type="number"
+														  name="Quantity"
+														  min = "1"
+														  value = "1"
+														  max = "20"
+														  id="Quantity"
+														  required
+														/>
+													
+													  </div>
+													  
+													  
+												{% comment %} <li><button class="value-decrease">-</button></li>
+												<li><input type="number" name="Quantity" id="Quantity" min="1" max="22" value="1" disabled class="product-value val"></li>
+												 <li><button class="value-increase">+ </button></li> {% endcomment %}
+											</ul>
+										</div> <!-- /.quantity -->
+								
+									</div> <!-- /.customize-order -->
+
+									
+								
+									 {% if now < time_out.end_order %}
+
+										{% if now > time_out.start_order %}
+									<div>
+										<button
+										class="theme-btn solid-button-one button-rose radius3"
+										type="submit">
+										ADD TO CART
+									  </button>						
+									</div>
+									
+									{% else %}
+
+									<h5>Time is Out !<h5><br> <h6 style="color: #EA4A70"> <a class="name"> We close orders from 1:00 PM,<br> Waiting for you Orders tomorrow !</a></h6>
+									
+									{% endif %}
+									
+									
+									{% else %}
+						
+									<h5>Time is Out !<h5><br> <h6 style="color: #EA4A70"> <a class="name"> We close orders from 1:00 PM,<br> Waiting for you Orders tomorrow !</a></h6>
+
+									{% endif %}
+
+
+									
+								</div> <!-- /.product-info -->
+							</form>
+								{% endfor %}
+							</div> <!-- /.col- -->
+						</div> <!-- /.row -->
+					</div> <!-- /.procuct-details -->
+					
+
+					<div class="realated-product product-showcase">
+						<h2 class="title">Most Sold</h2>
+						<div class="related-product-slider">
+							{% for all_products in all_products %}
+							{% if all_products.Most_Popular == True %}
+							<div class="item">
+								<div class="single-product-case">
+									<div class="img-holder"><a href="{{all_products.get_absolute_url}}"><img src="{{all_products.category.image.url}}" alt=""></a></div>
+									<div class="info">
+										<center> <h5> <a href="{{all_products.get_absolute_url}}" class="name">{{all_products.name}}.</a></h5>
+										<div class="price">EGP {{all_products.price}}</div></center>
+										</a>
+									</div>
+								</div> <!-- /.single-product-case -->
+							</div>
+							{% endif %}
+							{% endfor %}
+
+							
+							
+						</div> <!-- /.related-product-slider -->
+					</div> <!-- /.realated-product -->
+				</div> <!-- /.container -->
+			</div> <!-- /.shop-page -->
+
+			{% endblock content %}

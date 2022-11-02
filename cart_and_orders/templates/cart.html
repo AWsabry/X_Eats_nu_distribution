@@ -1,0 +1,149 @@
+{% extends "base.html" %} {% block content %} {% load static %}
+
+<!-- 
+			=============================================
+				Cart Page
+			============================================== 
+			-->
+<div class="cart-section pt-90 pb-100">
+  <div class="main-container">
+    <br /><br /><br /><br />
+    <form method="POST" class="cart-list-form">
+      {% csrf_token %}
+      <div class="table-responsive">
+        <table class="table">
+          {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+            <li>* {{ message }}</li>
+            {% endfor %}
+          </ul>
+          <br /><br />
+          {% endif %}
+          <thead>
+            <tr>
+              <th colspan="2">Product</th>
+              <th>Restaurant</th>
+              <th>Price</th>
+              <th>QTY</th>
+              <th>Total</th>
+              <th>&nbsp;</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for cartItems in cartItems %}
+            <tr>
+              <td class="product-thumbnails">
+                <a href="#" class="product-img"
+                  ><img
+                    src="{{cartItems.product.category.image.url}}"
+                    alt=""
+                    width="80"
+                    height="80"
+                /></a>
+              </td>
+              <td class="product-info">
+                <a href="#" class="product-name">{{cartItems.product.name}}</a>
+                <div class="serial">{{cartItems.product.productslug}}</div>
+              </td>
+              <td class="price"><span>{{cartItems.Restaurant.Name}}</span></td>
+
+              <td class="price"><span>EGP {{cartItems.price}}</span></td>
+              <td class="quantity">
+                <span>{{cartItems.quantity}}</span>
+              </td>
+              <td class="price total-price">
+                <span>EGP {{cartItems.totalOrderItemPrice}}</span>
+              </td>
+              <td>
+                <a href="{{cartItems.deleteing_item}}" class="remove-product"
+                  >Delete</a
+                >
+              </td>
+            </tr>
+        
+
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <!-- /.table-responsive -->
+
+      <div class="d-sm-flex justify-content-between cart-footer">
+        <div class="coupon-section">
+          <div class="coupon-form d-lg-flex align-items-center">
+            
+            <form method = "POST">
+            {% csrf_token %}
+            <input name="code" type="text" placeholder="Enter your code" />
+            <br> <br>
+            <button type="submit" class="dark-button-one update-cart-button">
+              APPLY
+            </button>
+            
+        
+          </form>
+          
+          </div>
+          <p>Note: Make sure to add the code after finish buying </p>
+
+          <!-- /.coupon-form -->
+          <br><br>
+          <a
+          href="{% url 'categories_and_products:Restaurant_view' %}"
+          class="dark-button-one"
+          >Continue Shopping
+          </a> 
+        
+        </div>
+        <!-- /.coupon-section -->
+
+        <div class="cart-total-section">
+          {% for cart in cart %}
+          <table class="cart-total-table">
+            <tbody>
+              <tr>
+                <th>Subtotal</th>
+                <td>EGP {{cart.total_price}}</td>
+              </tr>
+              <tr>
+                <th>Delivery</th>
+                {% for delivery in delivery %} 
+				{% if delivery.delivery_fees < 10.0 %}
+                <td><h6>EGP {{delivery.delivery_fees}} Limited Offer !</h6></td>
+                {% else %}
+                <td>EGP {{delivery.delivery_fees}}</td>
+                {% endif %} 
+				{% endfor %}
+              </tr>
+              <tr>
+                <th>Total</th>
+                <td>EGP {{cart.total_after_delivery}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- /.cart-total-table -->
+          
+          <br /><br />
+          {% if cart.total_after_delivery == 10 %}
+          
+          {% else %}
+
+          <a
+          href="{% url 'cart_and_orders:checkout' %}"
+          class="dark-button-one checkout-process"
+          >Proceed to Checkout
+        </a>
+          {% endif %}
+          
+        {% endfor %}
+        </div>
+      </div>
+      <!-- /.cart-footer -->
+    </form>
+  </div>
+  <!-- /.main-container -->
+</div>
+<!-- /.cart-section -->
+
+{% endblock content %}

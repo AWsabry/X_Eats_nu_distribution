@@ -1,0 +1,16 @@
+{% comment %} {% extends 'base.html' %} {% endcomment %}
+
+{% block content %}
+<div class="coupon-form d-lg-flex align-items-center">
+    <form method = "POST">
+      {% csrf_token %}
+    <input id="code" name="code" type="text" placeholder="Enter your code" />
+    
+    <a
+    href="{% url 'cart_and_orders:discounts' %}"
+    class="dark-button-one"
+    >APPLY
+    </a>
+  </form>
+  </div>
+  {% endblock content %}

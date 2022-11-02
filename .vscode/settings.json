@@ -1,0 +1,6 @@
+{
+    "cSpell.words": [
+        "categoryslug"
+    ],
+    "python.formatting.provider": "black"
+}

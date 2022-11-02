@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block content %}
+	
+{% load static %}
+
+
+		
+
+	
+
+
+			
+			<!-- 
+			=============================================
+				Text Inner Banner One
+			============================================== 
+			-->
+			<div class="text-inner-banner-one pos-r">
+				<div class="shape-wrapper">
+					<svg class="img-shape shape-one">
+					<path fill-rule="evenodd"  fill="rgb(255, 223, 204)"
+					 d="M6.000,12.000 C9.314,12.000 12.000,9.314 12.000,6.000 C12.000,2.686 9.314,-0.000 6.000,-0.000 C2.686,-0.000 -0.000,2.686 -0.000,6.000 C-0.000,9.314 2.686,12.000 6.000,12.000 Z"/>
+					</svg>
+					<svg class="img-shape shape-two">
+					<path fill-rule="evenodd"  fill="rgb(182, 255, 234)"
+					 d="M6.000,12.000 C9.314,12.000 12.000,9.314 12.000,6.000 C12.000,2.686 9.314,-0.000 6.000,-0.000 C2.686,-0.000 -0.000,2.686 -0.000,6.000 C-0.000,9.314 2.686,12.000 6.000,12.000 Z"/>
+					</svg>
+					<svg class="img-shape shape-three">
+					<path fill-rule="evenodd"  fill="rgb(181, 198, 255)"
+					 d="M12.000,24.000 C18.627,24.000 24.000,18.627 24.000,12.000 C24.000,5.372 18.627,-0.000 12.000,-0.000 C5.372,-0.000 -0.000,5.372 -0.000,12.000 C-0.000,18.627 5.372,24.000 12.000,24.000 Z"/>
+					</svg>
+					<svg class="img-shape shape-four">
+					<path fill-rule="evenodd"  fill="rgb(255, 156, 161)"
+					 d="M7.500,15.000 C11.642,15.000 15.000,11.642 15.000,7.500 C15.000,3.358 11.642,-0.000 7.500,-0.000 C3.358,-0.000 -0.000,3.358 -0.000,7.500 C-0.000,11.642 3.358,15.000 7.500,15.000 Z"/>
+					</svg>
+					<svg class="img-shape shape-five">
+					<path fill-rule="evenodd"  fill="rgb(178, 236, 255)"
+					 d="M12.500,25.000 C19.403,25.000 25.000,19.403 25.000,12.500 C25.000,5.596 19.403,-0.000 12.500,-0.000 C5.596,-0.000 -0.000,5.596 -0.000,12.500 C-0.000,19.403 5.596,25.000 12.500,25.000 Z"/>
+					</svg>
+				</div> <!-- /.shape-wrapper -->
+				<div class="container">
+					<p>Categories</p>
+					<h2 class="pt-30 pb-15">Categories</h2>
+				</div>
+			</div> <!-- /.text-inner-banner-one -->
+
+
+
+			
+			
+			<!-- 
+			=============================================
+				Our Portfolio
+			============================================== 
+			-->
+			<div class="our-portfolio">
+				<div class="container">
+					<div id="filter-for-classicTwo" class="cbp-l-filters-alignCenter filter-menu">
+				        <div data-filter="*" class="cbp-filter-item-active cbp-filter-item">
+				            ALL 
+				        </div>
+						{% for categories in categories %}
+				        <div data-filter=".{{categories.Category_name}} " class="cbp-filter-item">
+				            {{categories.Category_name}} 
+				        </div>
+						{% endfor %}
+				    </div>
+
+
+				    <div id="style-grid-two" class="cbp cube-port">
+
+						{% for categories in categories %}
+				        <div class="cbp-item graphic {{categories.Category_name}} design">
+				        	<div class="cbp-item-wrapper">
+					            <div class="cbp-caption">
+					                <div class="cbp-caption-defaultWrap">
+										
+					                    <img src="{{categories.image.url}}" alt="">
+					                </div>
+					                <div class="cbp-caption-activeWrap">
+					                    <div class="cbp-l-caption-alignCenter">
+					                        <div class="cbp-l-caption-body">
+					                            <a href="{{categories.get_absolute_url_category}}" class="portfolio-butt">View Menu</a>
+												<br>
+												
+					                            {% comment %} <a href="{% static 'images/gallery/24.png' %}" class="cbp-lightbox cbp-l-caption-buttonRight" data-title="Dashboard<br>by Paul Flavius Nechita">view larger</a> {% endcomment %}
+					                        </div>
+					                    </div>
+					                </div>
+									<center><h4 class="banner-main-title pt-15 pb-45 md-pb-20 wow fadeInUp animated"><span style="color:rgb(9,134,211);" >{{categories.Category_name}}</span></h4></center>
+					            </div>
+					        </div>
+					    </div>
+						{% endfor %}
+
+				        	   
+				    </div>
+				</div>
+			</div> <!-- /.our-portfolio -->
+
+
+
+			<!--
+			=====================================================
+				Contact Banner
+			=====================================================
+			-->
+			<div class="action-banner-one bg-white">
+				<div class="theme-title-one">
+					<h2 class="main-title">Want to see all products ?<br><i>Visit Our Menu.</i></h2>
+				</div> <!-- /.theme-title-one -->
+				<a href="{% url 'categories_and_products:Restaurant_view' %}" class="theme-btn line-button-one button-rose">Menu</a>
+			</div> <!-- /.action-banner-one -->
+
+
+
+			{% endblock content %} 

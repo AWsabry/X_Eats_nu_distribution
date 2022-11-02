@@ -1,0 +1,164 @@
+{% extends "auth_base.html" %} {% load static %}
+<!DOCTYPE html>
+
+{% block auth_content %}
+<!-- 
+			=============================================
+				SignUp Page
+			============================================== 
+			-->
+<div class="signUp-page signUp-standard pt-225 pb-100 md-pt-200">
+  <div class="shape-wrapper"></div>
+  <!-- /.shape-wrapper -->
+  <div class="signUp-illustration">
+    <img src="{% static 'images/logo/01.png' %}" alt="" />
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7 ml-auto">
+        <div class="sign-up-form-wrapper">
+          <div>
+            <h3>Signup Now!</h3>
+            <p>
+              Please give us a more details and we’ll add you to our early
+              access list.
+            </p>
+          </div>
+
+          <p class="or-text"><span></span></p>
+          <!-- /.title-area -->
+          {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+            <li>* {{ message }}</li>
+            {% endfor %}
+          </ul>
+          <br /><br />
+          {% endif %}
+          <form method="POST" id="signUp-form">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6">
+                <div tabindex="0" class="input-group">
+                  <input
+                    type="text"
+                    name="first_name"
+                    id="first_name"
+                    required
+                  />
+                  <label>FirstName</label>
+                </div>
+                <!-- /.input-group -->
+                <div tabindex="2" class="input-group">
+                  <input
+                    type="number"
+                    name="PhoneNumber"
+                    id="PhoneNumber"
+                    required
+                  />
+                  <label>Phonenumber</label>
+                </div>
+                <!-- /.input-group -->
+              </div>
+              <!-- /.col- -->
+              <div class="col-md-6">
+                <div tabindex="1" class="input-group">
+                  <input type="text" name="last_name" id="last_name" required />
+                  <label>LastName</label>
+                </div>
+                <!-- /.input-group -->
+                <div tabindex="3" class="input-group">
+                  <input type="email" name="email" id="email" required />
+                  <label>Email</label>
+                </div>
+                <!-- /.input-group -->
+              </div>
+              <!-- /.col- -->
+              <div class="col-md-6">
+                <div tabindex="4" class="input-group">
+                  <input
+                    type="password"
+                    name="password1"
+                    id="password1"
+                    required
+                  />
+                  <label>Password</label>
+                </div>
+                <!-- /.input-group -->
+                <div tabindex="5" class="input-group">
+                  <input
+                    type="password"
+                    name="password2"
+                    id="password2"
+                    required
+                  />
+                  <label>Confirm Password</label>
+                </div>
+
+                <div tabindex="8" class="input-group">
+                  <select class="theme-select-menu" name="school" id="school">
+                    <option value="">School*</option>
+                    <option value="CS">Computer Science</option>
+                    <option value="Engineering">Engineering</option>
+                    <option value="Business">Business</option>
+                    <option value="Biotechnology">Biotechnology</option>
+                    <option value="ST">Staff</option>
+                    <option value="NP">Nile Preneures (NP)</option>
+                  </select>
+                </div>
+                <br /><br /><br /><br /><br /><br />
+
+                <!-- /.input-group -->
+              </div>
+              <!-- /.col- -->
+
+              <div class="col-md-6">
+                <div tabindex="6" class="input-group">
+                  <input type="number" name="nu_id" id="nu_id" />
+                  <label>ID</label>
+                </div>
+                <!-- /.input-group -->
+
+                <div tabindex="7" class="input-group">
+                  <select class="theme-select-menu" name="title" id="title">
+                    <option value="">Title*</option>
+                    <option value="Freshman">Freshman</option>
+                    <option value="Sophomore">Sophomore</option>
+                    <option value="Junior">Junior</option>
+                    <option value="Senior">Senior</option>
+                    <option value="Staff">Staff</option>
+                    <option value="NP">Nile Preneures (NP)</option>
+                  </select>
+                  <br /><br /><br /><br /><br /><br /><br /><br /><br />
+                </div>
+                <!-- /.input-group -->
+              </div>
+              <!-- /.col- -->
+            </div>
+            <!-- /.row -->
+
+            <p class="signUp-text">
+              Have an account?
+              <a href="{% url 'Register_Login:login'%}">Sign in</a> now.
+            </p>
+            <div>
+              <label for="agreement"></label>
+            </div>
+
+            <button
+              class="theme-btn solid-button-one button-rose radius3"
+              name="submit"
+              id="submit"
+            >
+              Signup
+            </button>
+          </form>
+        </div>
+        <!-- /.sign-up-form-wrapper -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /.signUp-page -->
+
+{% endblock auth_content %}

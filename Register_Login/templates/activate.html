@@ -1,0 +1,12 @@
+{% autoescape off %}
+
+Hi {{user.first_name}} {{user.last_name}}
+
+Please use the below link to verfiy your account on X-Eats platform
+
+http://{{domain}}{% url 'Register_Login:activate' token %}
+
+Thanks,
+X-Eats 
+
+{% endautoescape %}

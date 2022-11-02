@@ -1,0 +1,155 @@
+{% extends "auth_base.html" %} {% load static %}
+<!DOCTYPE html>
+
+{% block auth_content %}
+<!-- 
+			=============================================
+				SignUp Page
+			============================================== 
+			-->
+<div class="signUp-page signUp-standard pt-225 pb-100 md-pt-200">
+  <div class="shape-wrapper"></div>
+  <!-- /.shape-wrapper -->
+  <div class="signUp-illustration">
+    <img src="{% static 'images/logo/01.png' %}" alt="" />
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7 ml-auto">
+        <div  class="sign-up-form-wrapper">
+          <div>
+            <h3>Cover the catering of your Event!</h3>
+            <p>
+              Please give us a more details and tell us more about details to cover your event, and one of the customer service will contact with you in 24 working hours.
+            </p>
+          </div>
+
+          <p class="or-text"><span></span></p>
+          <!-- /.title-area -->
+          {% if messages %}
+          <ul class="messages">
+            {% for message in messages %}
+            <li>* {{ message }}</li>
+            {% endfor %}
+          </ul>
+          <br /><br />
+          {% endif %}
+          <form method="POST" id="signUp-form">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6">
+                <label>FirstName</label>
+                <div tabindex="0" class="input-group">
+                  <input
+                    type="text"
+                    name="first_name"
+                    id="first_name"
+                    required
+                  />
+                  
+                </div>
+
+                <label>Phonenumber</label>
+                <!-- /.input-group -->
+                <div tabindex="2" class="input-group">
+                  <input
+                    type="number"
+                    name="PhoneNumber"
+                    id="PhoneNumber"
+                    required
+                  />
+                  
+                </div>
+                <!-- /.input-group -->
+              </div>
+              <!-- /.col- -->
+              <div class="col-md-6">
+                <label>LastName</label>
+                <div tabindex="1" class="input-group">
+                  <input type="text" name="last_name" id="last_name" required />
+                </div>
+                <!-- /.input-group -->
+                <label>Email</label>
+                <div tabindex="3" class="input-group">
+                  <input type="email" name="email" id="email" required />
+                  
+                </div>
+                
+                <!-- /.input-group -->
+              </div>
+              <!-- /.col- -->
+              <div class="col-md-6">
+                <label>Organization</label>
+                <!-- /.input-group -->
+                <div tabindex="5" class="input-group">
+                  <input
+                    type="Organization"
+                    name="Organization"
+                    id="Organization"
+                    required
+                  />
+                </div>
+
+                <div tabindex="8" class="input-group">
+                  <select class="theme-select-menu" name="school" id="school">
+                    <option value="">Restaurant*</option>
+                    {% for restaurant in  restaurant %}
+                    <option value="{{restaurant.Name}}">{{restaurant.Name}}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                
+        
+                <!-- /.input-group -->
+              </div>
+              <!-- /.col- -->
+
+              <div class="col-md-6">
+                <!-- /.input-group -->
+                <label>Event StartDate</label>
+                <div tabindex="5" class="input-group">
+                    <input
+                      type="date"
+                      name="date"
+                      id="date"
+                      required
+                    />
+                    
+                  </div>
+                <div tabindex="7" class="input-group">
+                  <select class="theme-select-menu" name="Quantity" id="Quantity">
+                    <option value="">Quantity of meals/sandwitches*</option>
+                    <option value="20-30">20-30</option>
+                    <option value="30-50">30-50</option>
+                    <option value="50-75">50-75</option>
+                    <option value="75-100">75-100</option>
+                    <option value="More than 100">100+</option>
+                  </select>
+                  <br /><br /><br /><br /><br /><br /><br /><br /><br />
+                </div>
+                <!-- /.input-group -->
+              </div>
+              <!-- /.col- -->
+            </div>
+            <!-- /.row -->
+            <button
+            class="theme-btn solid-button-one button-rose radius3"
+      type="submit"
+            name="submit"
+            id="signin"
+          >
+            Submit
+          </button>
+   
+           
+          </form>
+        </div>
+        <!-- /.sign-up-form-wrapper -->
+      </div>
+    </div>
+  </div>
+</div>
+<!-- /.signUp-page -->
+
+{% endblock auth_content %}
