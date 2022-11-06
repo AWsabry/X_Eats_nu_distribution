@@ -1,6 +1,8 @@
 from django.contrib import admin
 from cart_and_orders.models import Cart, CartItems, Delivery, Order
-import csv
+from .models import CartItems
+import pandas as pd
+from django.db.models import F
 from django.http import HttpResponse
 
 from categories_and_products.models import Product
@@ -80,22 +82,35 @@ class CartItemssAdmin(admin.ModelAdmin):
     list_filter = ('ordered',  'created')
     actions = ["export_as_csv",]
 
+    @admin.action(description='Export Selected')
+    def export_as_csv(self, request, queryset):
+        vals = ["product_id", "product_name", "product_arabicname","restaurant_name", "price", "bought_price", "quantity"]
+        new_queryset = queryset.annotate(
+            product_name=F("product__name"),
+            product_arabicname=F("product__ArabicName"),
+            bought_price=F("product__boughtPrice"),
+            restaurant_name=F("Restaurant__Name"),
+            ).values_list(*vals)
+        
+        df = pd.DataFrame(new_queryset, columns=vals)
+        new_df = df.groupby(["product_id", "product_name", "product_arabicname", "restaurant_name", "price", "bought_price"], as_index=False)["quantity"].aggregate(sum)
+        new_df["total_price"] = new_df["price"] * new_df["quantity"]
+        new_df["total_bought_price"] = new_df["bought_price"] * new_df["quantity"]
+        new_df["profit"] = new_df["total_price"] - new_df["total_bought_price"]
+        
+        new_df.loc["Totals"] = new_df.agg({
+            'quantity': 'sum', 
+            'total_price': 'sum', 
+            'total_bought_price': 'sum', 
+            'profit':'sum'
+            })
 
-
-
-    def export_as_csv(self, obj, queryset):
-       
-        meta = self.model._meta
-        field_names = ["product", "quantity",]
-        response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(meta)
-        writer = csv.writer(response)
-        writer.writerow(field_names)
-        for obj in queryset:
-            row = writer.writerow([getattr(obj, field) for field in field_names])
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename=summary.xlsx'
+        
+        new_df.to_excel(response)
+        
         return response
-    export_as_csv.short_description = "Export Selected"
-    
 
 class DeliveryfeesAdmin(admin.ModelAdmin):
     list_filter = ("city", "delivery_fees",)
