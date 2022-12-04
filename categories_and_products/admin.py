@@ -27,7 +27,7 @@ class PromoCodeAdmin(admin.ModelAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    prepopulated_fields = {'productslug': ('name',), }
+    prepopulated_fields = {'productslug': ('name','Restaurant','ArabicName',), }
     list_filter = ("name", "category", "Restaurant", "created")
     list_display = ('name', "price", 'Restaurant', "category",
                      "id", "created","Best_Offer", "Most_Popular","New_Products","active",)
@@ -36,6 +36,7 @@ class ProductAdmin(admin.ModelAdmin):
         'category',
     ]
     search_fields = ['name']
+    list_editable=['active']
 
 
 class RestaurantAdmin(admin.ModelAdmin):

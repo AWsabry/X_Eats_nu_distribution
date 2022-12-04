@@ -10,7 +10,11 @@ from Register_Login.utils import AccessTokenGenerator
 from categories_and_products.models import PromoCode
 
 
-
+time_choices = (
+    ('11:00 AM','11:00 AM'),
+    ('01:00 PM', '01:00 PM'),
+    ('03:00 PM','03:00 PM'),
+)
 
 
 class UserManager(BaseUserManager):
@@ -78,6 +82,23 @@ class Newsletter(models.Model):
     email = models.EmailField(max_length=500, blank=True)
     def __str__(self):
         return self.email
+
+
+
+
+class Receipts(models.Model):
+    total_in_cash = models.FloatField(default= 0)
+    created = models.DateTimeField(auto_now=True)
+    order_time = models.CharField(max_length=20, choices=time_choices,)
+    image = models.ImageField(
+        upload_to="receipts", blank=True,null=True )
+    add_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                             on_delete=models.CASCADE,null=True,blank=True,editable=False)
+
+    def __str__(self):
+        return self.order_time
+    class Meta:
+        verbose_name_plural = "Receipts"
 
 
 

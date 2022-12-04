@@ -1,8 +1,4 @@
-from datetime import datetime, timedelta
-import json
-import random
-from django.http import HttpResponse
-from django.utils import timezone
+from datetime import datetime
 from django.shortcuts import redirect, render
 from django.utils.translation import gettext as _
 from django.template.loader import render_to_string
@@ -11,9 +7,12 @@ from django.core.mail import EmailMultiAlternatives
 from Register_Login.models import Profile
 from cart_and_orders.forms import BromoCodeForm, CommentForm
 from cart_and_orders.models import Cart, CartItems, Delivery, Order
-from django.db.models import Sum
-import requests
-import hashlib
+# Rest Libraries
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from cart_and_orders.serializers import Cart_Serializer, CartItems_Serializer, Orders_Serializer
+from django.http import JsonResponse
 
 
 from categories_and_products.models import Category, PromoCode, Settings
@@ -40,7 +39,7 @@ def send_code_email(request, order_components, cart):
 def discounts(request, code):
     if request.user.is_authenticated:
         cart = Cart.objects.get(user=request.user)
-        if PromoCode.objects.filter(Promocode=code).exists():
+        if PromoCode.objects.filter(active = True,Promocode=code).exists():
             if cart.Promo_code_user == code:
                 messages.error(
                     request, _("*Promo Code is Applied Before"), extra_tags="danger"
@@ -236,3 +235,49 @@ def checkout(request):
         "time_out": time_out,
     }
     return render(request, "checkout.html", context)
+
+
+
+@api_view(['GET','POST'])
+
+
+
+# Getting CartItems
+def get_cartItems(request):
+    if request.method == 'GET':
+        all = CartItems.objects.all()
+        serializer = CartItems_Serializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = CartItems_Serializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+
+
+# Getting Carts
+def get_carts(request):
+    if request.method == 'GET':
+        all = Cart.objects.all()
+        serializer = Cart_Serializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = Cart_Serializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+
+
+# Getting Orders
+def get_orders(request):
+    if request.method == 'GET':
+        all = Order.objects.all()
+        serializer = Orders_Serializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = Orders_Serializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)

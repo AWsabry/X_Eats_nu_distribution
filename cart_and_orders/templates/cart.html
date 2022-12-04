@@ -34,7 +34,7 @@
             {% for cartItems in cartItems %}
             <tr>
               <td class="product-thumbnails">
-                <a href="#" class="product-img"
+                <a href="{{cartItems.product.get_absolute_url}}" class="product-img"
                   ><img
                     src="{{cartItems.product.category.image.url}}"
                     alt=""
@@ -43,7 +43,7 @@
                 /></a>
               </td>
               <td class="product-info">
-                <a href="#" class="product-name">{{cartItems.product.name}}</a>
+                <a href="{{cartItems.product.get_absolute_url}}" class="product-name">{{cartItems.product.name}}</a>
                 <div class="serial">{{cartItems.product.productslug}}</div>
               </td>
               <td class="price"><span>{{cartItems.Restaurant.Name}}</span></td>

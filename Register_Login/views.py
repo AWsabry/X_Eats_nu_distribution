@@ -16,6 +16,14 @@ from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import EmailMessage
 
+# Rest Libraries
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from Register_Login.serializers import UserSerializer
+from django.http import JsonResponse
+
+
 # Importing the utilts file
 from Register_Login.utils import AccessTokenGenerator
 
@@ -272,3 +280,19 @@ def profile(request):
     else:
         return redirect("Register_Login:login")
     return render(request, "profile.html", context)
+
+
+@api_view(['GET','POST'])
+
+# Getting Users
+
+def get_users(request):
+    if request.method == 'GET':
+        all = Profile.objects.filter(is_active = True)
+        serializer = UserSerializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = UserSerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)

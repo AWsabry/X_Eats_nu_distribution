@@ -26,7 +26,9 @@
 								<form method = "POST">
 									{% csrf_token %}
 								<div class="product-info">
-									<h3 class="product-name">{{products.name}}</h3>
+									<h3 class="product-name">{{products.name}}- {{products.ArabicName}}</h3>
+									<br>
+									
 									
 									<strong class="price">EGP {{products.price}}</strong>
 									<ul class="availability">
@@ -47,14 +49,22 @@
 											
 											<li> Ordering Time: <div class="input-group">
 												<select name="timing" id="timing">
-												  {% if now < start_1_PM.end_order %}
-													  {% if now < start_1_PM.end_order %}
-													  <option value="1:00 PM">1</option>
-												  {% endif %}
+										 {% if now < start_11_AM.end_order %}
+										 
+									    <option value="11:00 AM">11:00 AM</option>
+									
+									   {% endif %}
 												
-												  {% endif %}
+										{% if now < start_1_PM.end_order %}
+										<option value="1:00 PM">1:00 PM</option>
+										{% endif %}
 												
-												  <option value="3:00 PM">3</option>
+											{% if now < start_3_PM.end_order %}
+												  <option value="3:00 PM">
+												      3:00 PM</option>
+											{% endif %}      
+												    <option value="6:00 PM">
+												      6:00 PM</option>
 								
 												</select>
 											  </div>
@@ -146,9 +156,22 @@
 							<div class="item">
 								<div class="single-product-case">
 									<div class="img-holder"><a href="{{all_products.get_absolute_url}}"><img src="{{all_products.category.image.url}}" alt=""></a></div>
+									
 									<div class="info">
-										<center> <h5> <a href="{{all_products.get_absolute_url}}" class="name">{{all_products.name}}.</a></h5>
-										<div class="price">EGP {{all_products.price}}</div></center>
+									    
+										<center> 
+										
+										<h5> <a href="{{all_products.get_absolute_url}}" class="name">{{all_products.name}}.</a>
+										
+										</h5>
+										
+										<div class="price">EGP {{all_products.price}}</div>
+										
+										<br>
+										
+										<div class="price">{{all_products.Restaurant.Name}}</div>
+										
+										</center>
 										</a>
 									</div>
 								</div> <!-- /.single-product-case -->

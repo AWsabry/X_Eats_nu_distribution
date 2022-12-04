@@ -5,16 +5,20 @@ from cart_and_orders.models import Cart, CartItems, Delivery
 from categories_and_products.forms import Order_time, QuantityForm
 from categories_and_products.models import (
     Category,
-    Poster,
     Product,
     Restaurant,
     Settings,
 )
+from django.http import JsonResponse
+from rest_framework import status
 from django.contrib import messages
 from django.utils.translation import gettext as _
 from datetime import datetime, time, timedelta
 from django.utils import timezone
 import time
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from categories_and_products.serializers import CategorySerializer, ProductsSerializer, RestaurantSerializer
 
 
 def index(request):
@@ -40,7 +44,7 @@ def index(request):
 
 
 def Restaurant_view(request):
-    restaurant = Restaurant.objects.filter(active=True)
+    restaurant = Restaurant.objects.filter(active=True).order_by("-created")
     categories = Category.objects.filter(active=True)
     context = {"restaurant": restaurant, "categories": categories}
     return render(request, "Restaurant_view.html", context)
@@ -80,6 +84,7 @@ def product_details(request, productslug, restaurant_slug):
     time_out = Settings.objects.get(id="1")
     start_1_PM = Settings.objects.get(id="2")
     start_3_PM = Settings.objects.get(id="3")
+    start_11_AM = Settings.objects.get(id="4")
 
     now = datetime.now().time()
     end = time_out.end_order
@@ -95,6 +100,7 @@ def product_details(request, productslug, restaurant_slug):
         "now": now,
         "start_1_PM": start_1_PM,
         "start_3_PM": start_3_PM,
+        "start_11_AM" : start_11_AM
     }
 
     if request.method == "POST" and quantityForm.is_valid():
@@ -111,8 +117,7 @@ def product_details(request, productslug, restaurant_slug):
             if order_timing_form.is_valid():
 
                 if CartItems.objects.filter(
-                    user=request.user, product__productslug=productslug, ordered=False
-                ).exists():
+                    user=request.user, product__productslug=productslug, ordered=False,).exists():
                     cartItem = CartItems.objects.get(
                         user=request.user,
                         product__productslug=productslug,
@@ -143,27 +148,63 @@ def product_details(request, productslug, restaurant_slug):
                     )
                     return redirect("cart_and_orders:cart")
                 else:
+                    
+                    if CartItems.objects.filter(
+                        user=request.user, ordered=False,).exists():
 
-                    CartItems.objects.create(
-                        user=request.user,
-                        cart=cart,
-                        product=product_data,
-                        price=product_data.price,
-                        ordered=False,
-                        quantity=quantityForm.cleaned_data["Quantity"],
-                        totalOrderItemPrice=totalOrderItemPrice,
-                        Restaurant=restaurant,
-                        order_shift=order_timing_form.cleaned_data["timing"],
-                    )
+                        
+                        if CartItems.objects.filter(user=request.user,
+                        ordered=False,Restaurant__restaurant_slug =restaurant_slug).exists():
+                            
+                            print('Same or New Restaurant')
+                            CartItems.objects.create(
+                                user=request.user,
+                                cart=cart,
+                                product=product_data,
+                                price=product_data.price,
+                                ordered=False,
+                                quantity=quantityForm.cleaned_data["Quantity"],
+                                totalOrderItemPrice=totalOrderItemPrice,
+                                Restaurant=restaurant,
+                                order_shift=order_timing_form.cleaned_data["timing"],
+                            )
 
-                    cart.total_price += totalOrderItemPrice
+                            cart.total_price += totalOrderItemPrice
 
-                    cart.total_after_delivery = (
-                        cart.total_price + delivery.delivery_fees
-                    )
-                    cart.save()
-                    messages.success(request, _("* Added to cart"), extra_tags="danger")
-                    return redirect("cart_and_orders:cart")
+                            cart.total_after_delivery = (
+                                cart.total_price + delivery.delivery_fees
+                            )
+                            cart.save()
+                            messages.success(request, _("* Added to cart"), extra_tags="danger")
+                            return redirect("cart_and_orders:cart")
+                    
+                        else:
+
+                            messages.error(request, 'Cannot Order from two restaurants in one order.')
+                            print("Another restaurant")
+                            return redirect('cart_and_orders:cart')
+                    else:
+                        CartItems.objects.create(
+                                user=request.user,
+                                cart=cart,
+                                product=product_data,
+                                price=product_data.price,
+                                ordered=False,
+                                quantity=quantityForm.cleaned_data["Quantity"],
+                                totalOrderItemPrice=totalOrderItemPrice,
+                                Restaurant=restaurant,
+                                order_shift=order_timing_form.cleaned_data["timing"],
+                            )
+                        cart.total_price += totalOrderItemPrice
+
+                        cart.total_after_delivery = (
+                                cart.total_price + delivery.delivery_fees
+                            )
+                        cart.save()
+                        messages.success(request, _("* Added to cart"), extra_tags="danger")
+                        return redirect("cart_and_orders:cart")
+                    
+                        
         else:
             messages.success(request, _("* Please Login First"), extra_tags="danger")
             return redirect("Register_Login:login")
@@ -236,9 +277,9 @@ def searched_Page_Restaurants_Products(request, restaurant_slug):
     searched = request.GET.get("searched")
     restaurant = Restaurant.objects.filter(restaurant_slug=restaurant_slug)
     searching = (
-        Product.objects.filter(Restaurant__restaurant_slug=restaurant_slug)
+        Product.objects.filter(active = True,Restaurant__restaurant_slug=restaurant_slug)
         if not str(searched)
-        else Product.objects.filter(
+        else Product.objects.filter(active = True,
             Restaurant__restaurant_slug=restaurant_slug, name__contains=searched
         )
     )
@@ -254,3 +295,48 @@ def searched_Page_Restaurants_Products(request, restaurant_slug):
         "all_products": all_products,
     }
     return render(request, "searched_Page_Restaurants_Products.html", context)
+
+
+# APIs Handling
+
+@api_view(['GET','POST'])
+
+# Getting Restaurants
+
+def get_restaurants(request):
+    if request.method == 'GET':
+        all = Restaurant.objects.filter(active = True)
+        serializer = RestaurantSerializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = RestaurantSerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+
+
+# Getting Categories
+
+def get_category(request):
+    if request.method == 'GET':
+        all = Category.objects.filter(active = True)
+        serializer = CategorySerializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = CategorySerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+# Getting Products
+def get_products(request):
+    if request.method == 'GET':
+        all = Product.objects.filter(active = True)
+        serializer = ProductsSerializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = ProductsSerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)

@@ -12,4 +12,11 @@ urlpatterns = [
     path('ThankYou', view = views.ThankYou, name='ThankYou'),
     path('<int:id>', views.deleting, name='deleting'),
     path('checkout',views.checkout,name="checkout"),
+
+
+
+    # APIs Handling
+    path('get_orders/', view=views.get_orders, name='get_orders'),
+    path('get_carts/', view=views.get_carts, name='get_carts'),
+    path('get_cartItems/', view=views.get_cartItems, name='get_cartItems'),
 ]

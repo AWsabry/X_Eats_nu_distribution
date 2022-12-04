@@ -1,6 +1,6 @@
 from django.urls import path,re_path
 from django.contrib.auth import views as auth_views
-from Register_Login.views import Register, activate_user, email_activated, logOut, profile, signIn,email_sent,password_reset_emailing, team,events,about_us
+from Register_Login.views import Register, activate_user, email_activated, logOut, profile, signIn,email_sent,password_reset_emailing, team,events,about_us,get_users
 
 
 app_name = 'Register_Login'
@@ -31,5 +31,9 @@ urlpatterns = [
 
 
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(), name='password_reset_complete'),
+
+
+    # APIs URL
+    path('get_users/', view= get_users, name='get_users'),
 ]
 

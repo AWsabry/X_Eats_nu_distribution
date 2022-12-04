@@ -11,7 +11,7 @@ from X_Eats_nu_distribution import settings
 # Create your models here.
 
 class Restaurant(models.Model):
-    Name = models.CharField(max_length=250, blank=True, unique=True)
+    Name = models.CharField(max_length=250, blank=True, unique=True,null = True)
     restaurant_slug = models.SlugField(unique=True, db_index=True)
     address = models.CharField(max_length=250, blank=True,null = True,)
     image = models.ImageField(
@@ -21,7 +21,7 @@ class Restaurant(models.Model):
     active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.Name
+        return str(self.Name)
 
     def get_absolute_url_restaurant(self):
         return reverse('categories_and_products:menu', args=[self.restaurant_slug])
@@ -33,27 +33,27 @@ class Restaurant(models.Model):
 
 
 class Category(models.Model):
-    Category_name = models.CharField(max_length=250,unique = True)
+    Category_name = models.CharField(max_length=250,unique = True,)
     display_name =  models.CharField(max_length=250, blank=True,null = True)
-    categoryslug = models.SlugField(unique=True, db_index=True)
+    categoryslug = models.SlugField(unique=True, db_index=True,blank=True,null = True)
     image = models.ImageField(
-        upload_to="Categories", blank=True, )
+        upload_to="Categories", blank=True,null = True )
     active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     Restaurant = models.ForeignKey(
         Restaurant, on_delete=models.CASCADE, blank=True,null= True)
 
-
+    
+    
+    def __str__(self):
+        return str(self.Category_name)
+        
+        
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
-    def __str__(self):
-        return str(self.Category_name + " " + self.Restaurant.Name)
-
     def get_absolute_url_category(self):
         return reverse('categories_and_products:category_details', args=[self.Restaurant.restaurant_slug] + [self.categoryslug])
-
-    
 
     class Meta:
         verbose_name_plural = "Categories"
@@ -67,7 +67,7 @@ class Product(models.Model):
         Restaurant, on_delete=models.CASCADE, blank=True,null= True)
     description = models.TextField(blank=True)
     price = models.FloatField(default=0)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE,blank=True,null = True,)
     boughtPrice = models.FloatField(blank=True, null=True, default=0)
     offerPercentage = models.FloatField(blank=True, null=True,)
     active = models.BooleanField(default=True)

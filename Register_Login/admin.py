@@ -1,4 +1,4 @@
-from Register_Login.models import AccessToken, Events, Newsletter,Profile, Restaurant_Suggestion, Team_Member, TopCustomers
+from Register_Login.models import AccessToken, Events, Newsletter,Profile, Receipts, Restaurant_Suggestion, Team_Member, TopCustomers
 from django.contrib import admin
 
 # Register your models here.
@@ -19,6 +19,20 @@ class Team_Admin(admin.ModelAdmin):
 class TopCustomers_Admin(admin.ModelAdmin):
     model = Team_Member
     list_display = ('first_name','last_name','email','PhoneNumber')
+
+
+class Receipts_Admin(admin.ModelAdmin):
+    model = Receipts
+    list_display = ('created','total_in_cash','order_time','add_by')
+    readonly_fields=('add_by',)
+
+    def save_model(self, request, obj, form, change):
+        if getattr(obj, 'add_by', None) is None:
+            obj.add_by = request.user
+        obj.save()
+
+
+
 
 class Restaurant_Suggestion_Admin(admin.ModelAdmin):
     model = Restaurant_Suggestion
@@ -43,6 +57,8 @@ class Event_Admin(admin.ModelAdmin):
 
 
 admin.site.register(Events,Event_Admin)
+
+admin.site.register(Receipts, Receipts_Admin)
 
 
 admin.site.register(Profile, Register)

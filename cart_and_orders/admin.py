@@ -24,11 +24,6 @@ class CartAdmin(admin.ModelAdmin):
     ]
     search_fields = ['user']
 
-    
-
-
-    
-    
     def Cart_Name(self, obj):
         return   str(obj.user.first_name) + " " + str(obj.user.last_name)
       
@@ -79,8 +74,6 @@ class CartItemssAdmin(admin.ModelAdmin):
     list_display = ('user','ordered', 'created')
     list_filter = ('ordered',  'created')
     actions = ["export_as_csv",]
-
-
 
 
     def export_as_csv(self, obj, queryset):
