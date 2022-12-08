@@ -19,7 +19,8 @@ urlpatterns = [
     
     # APIs URL
 
-    path('get_category/', view=views.get_category, name='get_category'),
+    path('get_category/<int:id>', view=views.get_category, name='get_category'),
     path('get_products/', view=views.get_products, name='get_products'),
-    path('get_restaurants/', view=views.get_restaurants, name='get_restaurants'),
+    path('get_restaurants/<int:id>', view=views.get_restaurants, name='get_restaurants'),
+
 ]

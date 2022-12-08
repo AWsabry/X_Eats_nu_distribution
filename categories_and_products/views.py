@@ -303,10 +303,10 @@ def searched_Page_Restaurants_Products(request, restaurant_slug):
 
 # Getting Restaurants
 
-def get_restaurants(request):
+def get_restaurants(request,id):
     if request.method == 'GET':
-        all = Restaurant.objects.filter(active = True)
-        serializer = RestaurantSerializer(all,many = True)
+        all = Restaurant.objects.filter(active = True,id=id)
+        serializer = RestaurantSerializer(all,many = True,)
         return JsonResponse({"Names": serializer.data}, safe=False)
     if request.method == 'POST':
         serializer = RestaurantSerializer(data= request.data)
@@ -318,9 +318,9 @@ def get_restaurants(request):
 
 # Getting Categories
 
-def get_category(request):
+def get_category(request,id):
     if request.method == 'GET':
-        all = Category.objects.filter(active = True)
+        all = Category.objects.filter(active = True,id=id)
         serializer = CategorySerializer(all,many = True)
         return JsonResponse({"Names": serializer.data}, safe=False)
     if request.method == 'POST':
