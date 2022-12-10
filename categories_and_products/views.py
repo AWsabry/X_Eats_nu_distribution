@@ -8,6 +8,7 @@ from categories_and_products.models import (
     Product,
     Restaurant,
     Settings,
+    Poster
 )
 from django.http import JsonResponse
 from rest_framework import status
@@ -18,7 +19,7 @@ from django.utils import timezone
 import time
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from categories_and_products.serializers import CategorySerializer, ProductsSerializer, RestaurantSerializer
+from categories_and_products.serializers import CategorySerializer, ProductsSerializer, RestaurantSerializer,PosterSerializer
 
 
 def index(request):
@@ -302,8 +303,19 @@ def searched_Page_Restaurants_Products(request, restaurant_slug):
 @api_view(['GET','POST'])
 
 # Getting Restaurants
+def get_restaurants(request,):
+    if request.method == 'GET':
+        all = Restaurant.objects.filter(active = True,)
+        serializer = RestaurantSerializer(all,many = True,)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = RestaurantSerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
 
-def get_restaurants(request,id):
+# Getting Restaurants by id
+def get_restaurants_by_id(request,id):
     if request.method == 'GET':
         all = Restaurant.objects.filter(active = True,id=id)
         serializer = RestaurantSerializer(all,many = True,)
@@ -315,10 +327,20 @@ def get_restaurants(request,id):
             return Response(serializer.data, status = status.HTTP_201_CREATED)
 
 
-
 # Getting Categories
+def get_category(request,):
+    if request.method == 'GET':
+        all = Category.objects.filter(active = True,)
+        serializer = CategorySerializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = CategorySerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
 
-def get_category(request,id):
+# Getting Categories by id
+def get_category_by_id(request,id):
     if request.method == 'GET':
         all = Category.objects.filter(active = True,id=id)
         serializer = CategorySerializer(all,many = True)
@@ -337,6 +359,31 @@ def get_products(request):
         return JsonResponse({"Names": serializer.data}, safe=False)
     if request.method == 'POST':
         serializer = ProductsSerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+# Getting Products by id
+def get_products_by_id(request,id):
+    if request.method == 'GET':
+        all = Product.objects.filter(active = True,id=id)
+        serializer = ProductsSerializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = ProductsSerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+
+# Getting Poster
+def get_poster(request,):
+    if request.method == 'GET':
+        all = Poster.objects.filter(active = True,)
+        serializer = PosterSerializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = PosterSerializer(data= request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)

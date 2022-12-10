@@ -1,24 +1,24 @@
 from rest_framework import serializers
-from categories_and_products.models import Restaurant,Category, Product
+from categories_and_products.models import Restaurant,Category, Product,Poster
 
 
 class RestaurantSerializer(serializers.ModelSerializer):
     class Meta:
         model = Restaurant
-        fields = ['Name',"restaurant_slug", "image", 'created',
-                    "active",]
-
+        fields = '__all__'
 
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['Category_name',"display_name", "categoryslug", 'image',
-                    "active", "created", "Restaurant",]
-
+        fields = '__all__'
 
 class ProductsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['name',"ArabicName", "productslug", 'Restaurant',
-                    "description", "price", "category","Most_Popular","New_Products","Best_Offer","created",]
+        fields = '__all__'
+
+class PosterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Poster
+        fields = '__all__'

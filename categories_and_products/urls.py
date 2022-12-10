@@ -18,9 +18,16 @@ urlpatterns = [
 
     
     # APIs URL
-
-    path('get_category/<int:id>', view=views.get_category, name='get_category'),
+    path('get_category/', view=views.get_category, name='get_category'),
+    path('get_category_by_id/<int:id>', view=views.get_category_by_id, name='get_category_by_id'),
+    
     path('get_products/', view=views.get_products, name='get_products'),
-    path('get_restaurants/<int:id>', view=views.get_restaurants, name='get_restaurants'),
+    path('get_products_by_id/<int:id>', view=views.get_products_by_id, name='get_products_by_id'),
+
+    path('get_restaurants_by_id/<int:id>', view=views.get_restaurants_by_id, name='get_restaurants_by_id'),
+    path('get_restaurants/', view=views.get_restaurants, name='get_restaurants'),
+
+    path('get_poster/', view=views.get_poster, name='get_poster'),
+    
 
 ]

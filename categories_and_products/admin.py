@@ -44,12 +44,18 @@ class RestaurantAdmin(admin.ModelAdmin):
     list_display = ("Name","created")
     search_fields = ['Name']
 
+class Poster_Admin(admin.ModelAdmin):
+    list_display = ("name","active")
+
+
+
 
 
 admin.site.register(Category, Categories_Admin)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Restaurant,RestaurantAdmin)
 admin.site.register(Settings,)
+admin.site.register(Poster,Poster_Admin)
 
 
 admin.site.register(PromoCode, PromoCodeAdmin)

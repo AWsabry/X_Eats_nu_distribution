@@ -284,10 +284,12 @@ def profile(request):
         return redirect("Register_Login:login")
     return render(request, "profile.html", context)
 
-@api_view(['GET','POST'])
+# APIs Handling   
+
 
 # Creating Users
 @csrf_exempt 
+@api_view(['GET','POST'])
 def create_users_API(request):
     if request.method == 'GET':
         all = Profile.objects.filter(is_active = True)
@@ -312,13 +314,13 @@ def create_users_API(request):
 
 # Login Users
 @csrf_protect
-@api_view(['GET','POST','DELETE','PUT'])
+@api_view(['GET','POST','PUT'])
+
 def login_users_API(request):
     if request.method == 'GET':
         all = Profile.objects.filter(is_active = True)
-        serializer = UserSerializer(all,many = True)
+        serializer = LoginSerializer(all,many = True)
         return JsonResponse({"Names": serializer.data}, safe=False)
-
     if request.method == 'POST':
         serializer = LoginSerializer(data= request.data,context={'request': request})
         print(serializer)
@@ -333,17 +335,27 @@ def login_users_API(request):
                         user_login(request, user)
                         print('active')
                         print(HttpResponse.status_code)
-                        return Response(status = status.HTTP_302_FOUND)
-
+                        return Response(serializer.data, status = status.HTTP_302_FOUND,data = request.user)
                 else:
                     print('Not Active')
                     return Response.status_code
-           
             else:
                 print('Invalid Credentials')
                 print(status.HTTP_404_NOT_FOUND)
-                return Response(status = status.HTTP_404_NOT_FOUND)
-                
+                return Response(status = status.HTTP_404_NOT_FOUND)         
         else:
             print("Not Valid")
         return Response(serializer.data, status = status.HTTP_404_NOT_FOUND)
+
+# Get User by Id
+@api_view(['GET','POST','PUT'])
+def get_user_by_id(request,id):
+    if request.method == 'GET':
+        all = Profile.objects.filter(is_active = True,id=id)
+        serializer = UserSerializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = UserSerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)

@@ -238,12 +238,38 @@ def checkout(request):
     return render(request, "checkout.html", context)
 
 
+# API Handling
 
-@api_view(['GET','PUT','DELETE','POST'])
+# Deleting CartItems
+@api_view(['GET','POST','DELETE','PUT'])
+def delete_cartItems(request,id):
+    if request.user.is_authenticated:
+        cart = Cart.objects.get(user=request.user)
+        cartItem = CartItems.objects.get(user=request.user, ordered=False, id=id)
+        delivery = Delivery.objects.get(city="NU")
 
+        deleteing = CartItems.objects.filter(
+            user=request.user, ordered=False, id=id
+        ).delete()
+        if deleteing:
+            if cartItem.price > cart.total_price:
+                Cart.objects.filter(user=request.user).update(
+                    total_price=0, total_after_delivery=10
+                )
+
+            else:
+                new_total_after_deleting = cart.total_price - (
+                    cartItem.price * cartItem.quantity
+                )
+                Cart.objects.filter(user=request.user).update(
+                    total_price=new_total_after_deleting,
+                    total_after_delivery=new_total_after_deleting
+                    + delivery.delivery_fees,
+                )
 
 
 # Getting CartItems
+@api_view(['GET','PUT','DELETE','POST'])
 def get_cartItems(request):
     if request.method == 'GET':
         all = CartItems.objects.all()
@@ -255,7 +281,22 @@ def get_cartItems(request):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
 
+# Getting User CartItems
+@api_view(['GET','PUT','DELETE','POST'])
+def get_user_cartItems(request):
+    if request.user.is_authenticated:
+        if request.method == 'GET':
+            all = CartItems.objects.filter(user=request.user.id)
+            serializer = CartItems_Serializer(all,many = True)
+            return JsonResponse({"Names": serializer.data}, safe=False)
 
+        if request.method == 'POST':
+            serializer = CartItems_Serializer(data= request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status = status.HTTP_201_CREATED)
+    else:
+        return JsonResponse({"Names": "Need to Login"}, safe=False)
 
 # Getting Carts
 @api_view(['GET','PUT','DELETE','POST'])
@@ -271,20 +312,50 @@ def get_carts(request):
             return Response(serializer.data, status = status.HTTP_201_CREATED)
 
     if request.method == 'PUT':
-        print("heellloo")
         serializer = Cart_Serializer(data= request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
-        print("Hello")
 
-
+# Getting Carts by ID
 @api_view(['GET','PUT','DELETE','POST'])
+def get_carts_by_id(request,id):
+    if request.method == 'GET':
+        all = Cart.objects.filter(id=id)
+        serializer = Cart_Serializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = Cart_Serializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+    if request.method == 'PUT':
+        serializer = Cart_Serializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+
 
 # Getting Orders
+@api_view(['GET','PUT','POST'])
 def get_orders(request):
     if request.method == 'GET':
         all = Order.objects.all()
+        serializer = Orders_Serializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = Orders_Serializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+# Getting Orders by Id
+@api_view(['GET','PUT','POST'])
+def get_orders_by_id(request,id):
+    if request.method == 'GET':
+        all = Order.objects.filter(id=id)
         serializer = Orders_Serializer(all,many = True)
         return JsonResponse({"Names": serializer.data}, safe=False)
     if request.method == 'POST':

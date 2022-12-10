@@ -106,7 +106,7 @@ class Product(models.Model):
 class Poster(models.Model):
     name = models.CharField(max_length=250, blank=True, unique=True)
     background_image = models.ImageField(
-        upload_to="codeCategories", blank=True,)
+        upload_to="Mobile_Poster", blank=True,)
     active = models.BooleanField(default=True)
 
 

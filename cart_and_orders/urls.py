@@ -17,6 +17,13 @@ urlpatterns = [
 
     # APIs Handling
     path('get_orders/', view=views.get_orders, name='get_orders'),
-    path('get_carts/', view=views.get_carts, name='get_carts'),
+    path('get_orders_by_id/<int:id>', view=views.get_orders_by_id, name='get_orders_by_id'),
+
     path('get_cartItems/', view=views.get_cartItems, name='get_cartItems'),
+    path('get_user_cartItems/', view=views.get_user_cartItems, name='get_user_cartItems'),
+
+    path('get_carts/', view=views.get_carts, name='get_carts'),
+    path('get_carts_by_id/<int:id>', view=views.get_carts_by_id, name='get_carts_by_id'),
+    
+
 ]
