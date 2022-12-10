@@ -9,6 +9,7 @@ from cart_and_orders.forms import BromoCodeForm, CommentForm
 from cart_and_orders.models import Cart, CartItems, Delivery, Order
 # Rest Libraries
 from rest_framework.decorators import api_view
+from django.views.decorators.csrf import csrf_exempt,csrf_protect
 from rest_framework.response import Response
 from rest_framework import status
 from cart_and_orders.serializers import Cart_Serializer, CartItems_Serializer, Orders_Serializer
@@ -238,7 +239,7 @@ def checkout(request):
 
 
 
-@api_view(['GET','POST'])
+@api_view(['GET','PUT','DELETE','POST'])
 
 
 
@@ -257,6 +258,7 @@ def get_cartItems(request):
 
 
 # Getting Carts
+@api_view(['GET','PUT','DELETE','POST'])
 def get_carts(request):
     if request.method == 'GET':
         all = Cart.objects.all()
@@ -268,7 +270,16 @@ def get_carts(request):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
 
+    if request.method == 'PUT':
+        print("heellloo")
+        serializer = Cart_Serializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+        print("Hello")
 
+
+@api_view(['GET','PUT','DELETE','POST'])
 
 # Getting Orders
 def get_orders(request):

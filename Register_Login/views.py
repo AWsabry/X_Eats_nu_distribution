@@ -13,14 +13,14 @@ from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth import authenticate
 from django.utils.translation import gettext as _
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt,csrf_protect
 from django.core.mail import EmailMessage
-
+from django.contrib.auth.models import update_last_login
 # Rest Libraries
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from Register_Login.serializers import UserSerializer
+from Register_Login.serializers import LoginSerializer, UserSerializer
 from django.http import JsonResponse
 
 
@@ -131,7 +131,9 @@ def Register(request):
                     title=title,
                     PhoneNumber=PhoneNumber,
                 )
-                send_activate_mail(request, user)
+                print(user)
+                print(type(user))
+                # send_activate_mail(request, user)
                 if not user:
                     messages.error(request, "Your email is not active")
                 else:
@@ -227,6 +229,7 @@ def team(request):
 
 
 # Login View
+@csrf_exempt
 def signIn(request):
     form = LoginForm(request.POST, request.FILES)
     if request.user.is_authenticated:
@@ -281,18 +284,66 @@ def profile(request):
         return redirect("Register_Login:login")
     return render(request, "profile.html", context)
 
-
 @api_view(['GET','POST'])
 
-# Getting Users
-
-def get_users(request):
+# Creating Users
+@csrf_exempt 
+def create_users_API(request):
     if request.method == 'GET':
         all = Profile.objects.filter(is_active = True)
         serializer = UserSerializer(all,many = True)
         return JsonResponse({"Names": serializer.data}, safe=False)
+
     if request.method == 'POST':
         serializer = UserSerializer(data= request.data)
         if serializer.is_valid():
-            serializer.save()
+            user = Profile.objects.create_user(
+                    email=serializer.validated_data['email'],
+                    first_name=serializer.validated_data['first_name'],
+                    last_name=serializer.validated_data['last_name'],
+                    password=serializer.validated_data['password'],
+                    nu_id=serializer.validated_data['nu_id'],
+                    school=serializer.validated_data['school'],
+                    title=serializer.validated_data['title'],
+                    PhoneNumber=serializer.validated_data['PhoneNumber'],
+                )
+            send_activate_mail(request,user)
             return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+# Login Users
+@csrf_protect
+@api_view(['GET','POST','DELETE','PUT'])
+def login_users_API(request):
+    if request.method == 'GET':
+        all = Profile.objects.filter(is_active = True)
+        serializer = UserSerializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+
+    if request.method == 'POST':
+        serializer = LoginSerializer(data= request.data,context={'request': request})
+        print(serializer)
+        if serializer.is_valid(raise_exception=True):
+            print("Valid")
+            user = authenticate(request, email=serializer.validated_data['email'],
+            password=serializer.validated_data['password'],
+            )
+            if user:
+                if user.is_active:
+                        update_last_login(None, user)
+                        user_login(request, user)
+                        print('active')
+                        print(HttpResponse.status_code)
+                        return Response(status = status.HTTP_302_FOUND)
+
+                else:
+                    print('Not Active')
+                    return Response.status_code
+           
+            else:
+                print('Invalid Credentials')
+                print(status.HTTP_404_NOT_FOUND)
+                return Response(status = status.HTTP_404_NOT_FOUND)
+                
+        else:
+            print("Not Valid")
+        return Response(serializer.data, status = status.HTTP_404_NOT_FOUND)
