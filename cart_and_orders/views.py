@@ -283,10 +283,9 @@ def get_cartItems(request):
 
 # Getting User CartItems
 @api_view(['GET','PUT','DELETE','POST'])
-def get_user_cartItems(request):
-    if request.user.is_authenticated:
+def get_user_cartItems(request,email):
         if request.method == 'GET':
-            all = CartItems.objects.filter(user=request.user.id)
+            all = CartItems.objects.filter(user__email=email)
             serializer = CartItems_Serializer(all,many = True)
             return JsonResponse({"Names": serializer.data}, safe=False)
 
@@ -295,8 +294,7 @@ def get_user_cartItems(request):
             if serializer.is_valid():
                 serializer.save()
                 return Response(serializer.data, status = status.HTTP_201_CREATED)
-    else:
-        return JsonResponse({"Names": "Need to Login"}, safe=False)
+
 
 # Getting Carts
 @api_view(['GET','PUT','DELETE','POST'])
@@ -319,9 +317,9 @@ def get_carts(request):
 
 # Getting Carts by ID
 @api_view(['GET','PUT','DELETE','POST'])
-def get_carts_by_id(request,id):
+def get_carts_by_id(request,email):
     if request.method == 'GET':
-        all = Cart.objects.filter(id=id)
+        all = Cart.objects.filter(user__email=email)
         serializer = Cart_Serializer(all,many = True)
         return JsonResponse({"Names": serializer.data}, safe=False)
     if request.method == 'POST':

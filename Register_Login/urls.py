@@ -36,7 +36,7 @@ urlpatterns = [
     # APIs URL
     path('create_users_API/', view= create_users_API, name='create_users_API'),
     path('login_users_API/', view= login_users_API, name='login_users_API'),
-    path('get_user_by_id/<int:id>', view= get_user_by_id, name='get_user_by_id'),
+    path('get_user_by_id/<str:email>', view= get_user_by_id, name='get_user_by_id'),
 ]
 
 

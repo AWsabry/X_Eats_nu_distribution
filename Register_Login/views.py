@@ -319,10 +319,10 @@ def create_users_API(request):
 def login_users_API(request):
     if request.method == 'GET':
         all = Profile.objects.filter(is_active = True)
-        serializer = LoginSerializer(all,many = True)
+        serializer = UserSerializer(all,many = True)
         return JsonResponse({"Names": serializer.data}, safe=False)
     if request.method == 'POST':
-        serializer = LoginSerializer(data= request.data,context={'request': request})
+        serializer = UserSerializer(data= request.data,context={'request': request})
         print(serializer)
         if serializer.is_valid(raise_exception=True):
             print("Valid")
@@ -349,9 +349,9 @@ def login_users_API(request):
 
 # Get User by Id
 @api_view(['GET','POST','PUT'])
-def get_user_by_id(request,id):
+def get_user_by_id(request,email):
     if request.method == 'GET':
-        all = Profile.objects.filter(is_active = True,id=id)
+        all = Profile.objects.filter(is_active = True,email=email)
         serializer = UserSerializer(all,many = True)
         return JsonResponse({"Names": serializer.data}, safe=False)
     if request.method == 'POST':

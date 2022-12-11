@@ -351,6 +351,18 @@ def get_category_by_id(request,id):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
 
+# Getting Restaurants Category
+def get_category_of_restaurants(request,id):
+    if request.method == 'GET':
+        all = Category.objects.filter(active = True,Restaurant__id = id)
+        serializer = CategorySerializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = CategorySerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+
 # Getting Products
 def get_products(request):
     if request.method == 'GET':
@@ -375,6 +387,68 @@ def get_products_by_id(request,id):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
 
+# Getting Most Sold Products
+def get_products_mostSold_products(request):
+    if request.method == 'GET':
+        all = Product.objects.filter(active = True,Most_Popular=True)
+        serializer = ProductsSerializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = ProductsSerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+# Getting New Products
+def get_products_new_products(request):
+    if request.method == 'GET':
+        all = Product.objects.filter(active = True,New_Products=True)
+        serializer = ProductsSerializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = ProductsSerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+
+# Getting Best Offer
+def get_best_offer_products(request):
+    if request.method == 'GET':
+        all = Product.objects.filter(active = True,Best_Offer=True)
+        serializer = ProductsSerializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = ProductsSerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+
+
+# Getting Products by restaurant id
+def get_products_by_restaurant_id(request,id,):
+    if request.method == 'GET':
+        all = Product.objects.filter(active = True,Restaurant__id=id)
+        serializer = ProductsSerializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = ProductsSerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+# Getting Products by restaurant & category
+def get_products_of_restaurant_by_category(request,restaurantid,categoryid):
+    if request.method == 'GET':
+        all = Product.objects.filter(active = True,Restaurant__id=restaurantid,category__id = categoryid)
+        serializer = ProductsSerializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = ProductsSerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
 
 # Getting Poster
 def get_poster(request,):
