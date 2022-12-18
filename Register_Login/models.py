@@ -195,3 +195,19 @@ class Events(models.Model):
 
     class Meta:
         verbose_name_plural = "Events"
+
+
+
+class Push_Notification(models.Model):
+    notification_name = models.CharField(max_length=250,)
+    title = models.CharField(max_length=250,)
+    content = models.TextField(max_length=250,)
+    image = models.ImageField(default='https://x-eats.com/static/images/logo/logo%20-new.png',blank=True,null= True)
+    created = models.DateTimeField(auto_now=True)
+
+    
+
+    def __str__(self):
+        return self.notification_name
+    class Meta:
+        verbose_name_plural = "Push Notifications"

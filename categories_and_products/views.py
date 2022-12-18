@@ -301,7 +301,6 @@ def searched_Page_Restaurants_Products(request, restaurant_slug):
 # APIs Handling
 
 @api_view(['GET','POST'])
-
 # Getting Restaurants
 def get_restaurants(request,):
     if request.method == 'GET':
@@ -314,6 +313,7 @@ def get_restaurants(request,):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
 
+@api_view(['GET','POST'])
 # Getting Restaurants by id
 def get_restaurants_by_id(request,id):
     if request.method == 'GET':
@@ -326,7 +326,7 @@ def get_restaurants_by_id(request,id):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
 
-
+@api_view(['GET','POST'])
 # Getting Categories
 def get_category(request,):
     if request.method == 'GET':
@@ -339,6 +339,7 @@ def get_category(request,):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
 
+@api_view(['GET','POST'])
 # Getting Categories by id
 def get_category_by_id(request,id):
     if request.method == 'GET':
@@ -351,6 +352,7 @@ def get_category_by_id(request,id):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
 
+@api_view(['GET','POST'])
 # Getting Restaurants Category
 def get_category_of_restaurants(request,id):
     if request.method == 'GET':
@@ -363,6 +365,7 @@ def get_category_of_restaurants(request,id):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
 
+@api_view(['GET','POST'])
 # Getting Products
 def get_products(request):
     if request.method == 'GET':
@@ -375,6 +378,7 @@ def get_products(request):
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
 
+@api_view(['GET','POST'])
 # Getting Products by id
 def get_products_by_id(request,id):
     if request.method == 'GET':

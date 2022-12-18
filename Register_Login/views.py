@@ -41,6 +41,27 @@ from Register_Login.forms import Event_form, LoginForm, RegisterForm
 from cart_and_orders.models import Cart, CartItems, Order
 from categories_and_products.models import Restaurant
 
+# Firebase Libraries
+
+import firebase_admin
+from firebase_admin import messaging, credentials
+
+cred = credentials.Certificate("x-eats-15a80-firebase-adminsdk-atk3a-fffd7ed32a.json")
+firebase_admin.initialize_app(cred)
+
+firebaseConfig = {
+    'apiKey': "AIzaSyAaS25sOWbMamSpdrhumzoim8z15ctoJsM",
+    'authDomain': "x-eats-15a80.firebaseapp.com",
+    'projectId': "x-eats-15a80",
+    'storageBucket': "x-eats-15a80.appspot.com",
+    'messagingSenderId': "258167260360",
+    'appId': "1:258167260360:web:59fef311d6cc809c8391fd",
+    'measurementId': "G-6FLQ8JHVN8"
+}
+
+
+
+
 
 # Email Confirm SignUp
 def send_tracking(user):

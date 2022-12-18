@@ -1,7 +1,30 @@
-from Register_Login.models import AccessToken, Events, Newsletter,Profile, Receipts, Restaurant_Suggestion, Team_Member, TopCustomers
+from Register_Login.models import AccessToken, Events, Newsletter,Profile, Receipts, Restaurant_Suggestion, Team_Member, TopCustomers,Push_Notification
 from django.contrib import admin
+from firebase_admin import messaging
 
 # Register your models here.
+
+tokens = ["f0pi6BPQRy-AK7o8jyN6dH:APA91bHmOSFmhFJPyvLgQ9TkK1ykxtauBQ49Mp5v_-TJ-IkrQZRkeqM_m4ENE1kMrZY2ZMMnED-Sn7RY5vAHnT--u0CyjbHaO_V3HWF8BaGid0R8erzSKgZtM6uhRCjy3-Oh9jjig2j3"]
+
+
+def sendPush(title,content, registration_token, dataObject=None):
+    # See documentation on defining a message payload.
+    message = messaging.MulticastMessage(
+        notification=messaging.Notification(
+            title= title,
+            body= content,
+            image= 'https://x-eats.com/static/images/logo/logo%20-new.png',
+        ),
+        data=dataObject,
+        tokens= registration_token
+    )
+
+    # Send a message to the device corresponding to the provided
+    # registration token.
+    response = messaging.send_multicast(message)
+    # Response is a message ID string.
+    print('Successfully sent message:', response, message)
+
 
 
 class Register(admin.ModelAdmin):
@@ -56,13 +79,22 @@ class Event_Admin(admin.ModelAdmin):
 
 
 
+class pushNotiticationAdmin(admin.ModelAdmin):
+    model = Push_Notification
+    list_display = ('notification_name','title','content','created','id')
+
+    def save_model(self, request, obj, form, change):
+        sendPush(obj.title, obj.content, tokens)
+        obj.save()
+
+
+
+
+
+admin.site.register(Push_Notification, pushNotiticationAdmin)
 admin.site.register(Events,Event_Admin)
-
 admin.site.register(Receipts, Receipts_Admin)
-
-
 admin.site.register(Profile, Register)
-
 admin.site.register(Team_Member, Team_Admin)
 admin.site.register(TopCustomers, TopCustomers_Admin)
 admin.site.register(Restaurant_Suggestion,Restaurant_Suggestion_Admin)

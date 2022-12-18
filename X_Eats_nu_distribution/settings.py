@@ -25,9 +25,7 @@ SECRET_KEY = 'django-insecure-cdgm3hemx-^m_0mru16%vyx_fji@nagse1e%a3*!v*-8ldczf4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-
-]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -54,6 +52,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
 
 ROOT_URLCONF = 'X_Eats_nu_distribution.urls'
 
@@ -108,6 +108,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
@@ -153,3 +155,9 @@ EMAIL_HOST_PASSWORD = 'h@l-[c]OFZyD'
 
 MAXIMUM_SIZE_ALLOWED_PHOTO = 1000 * 312 * 8
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+# To learn more, visit the docs here:
+# https://cloud.google.com/docs/authentication/getting-started>
+
+
