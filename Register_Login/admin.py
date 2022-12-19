@@ -1,13 +1,17 @@
-from Register_Login.models import AccessToken, Events, Newsletter,Profile, Receipts, Restaurant_Suggestion, Team_Member, TopCustomers,Push_Notification
+from Register_Login.models import AccessToken, Events, Newsletter, Notification_token,Profile, Receipts, Restaurant_Suggestion, Team_Member, TopCustomers,Push_Notification
 from django.contrib import admin
 from firebase_admin import messaging
 
 # Register your models here.
 
-tokens = ["f0pi6BPQRy-AK7o8jyN6dH:APA91bHmOSFmhFJPyvLgQ9TkK1ykxtauBQ49Mp5v_-TJ-IkrQZRkeqM_m4ENE1kMrZY2ZMMnED-Sn7RY5vAHnT--u0CyjbHaO_V3HWF8BaGid0R8erzSKgZtM6uhRCjy3-Oh9jjig2j3"]
-
+List_of_tokens = []
+all_notifications = Notification_token.objects.values_list('token',flat=True,)
+for i in all_notifications:
+    List_of_tokens.append(i)
+print(List_of_tokens)
 
 def sendPush(title,content, registration_token, dataObject=None):
+    
     # See documentation on defining a message payload.
     message = messaging.MulticastMessage(
         notification=messaging.Notification(
@@ -16,7 +20,7 @@ def sendPush(title,content, registration_token, dataObject=None):
             image= 'https://x-eats.com/static/images/logo/logo%20-new.png',
         ),
         data=dataObject,
-        tokens= registration_token
+        tokens= List_of_tokens
     )
 
     # Send a message to the device corresponding to the provided
@@ -84,8 +88,14 @@ class pushNotiticationAdmin(admin.ModelAdmin):
     list_display = ('notification_name','title','content','created','id')
 
     def save_model(self, request, obj, form, change):
-        sendPush(obj.title, obj.content, tokens)
+        sendPush(obj.title, obj.content, List_of_tokens)
         obj.save()
+
+
+class NotificationTokensAdmin(admin.ModelAdmin):
+    model = Notification_token
+    list_display = ('created','token','id')
+
 
 
 
@@ -97,6 +107,7 @@ admin.site.register(Receipts, Receipts_Admin)
 admin.site.register(Profile, Register)
 admin.site.register(Team_Member, Team_Admin)
 admin.site.register(TopCustomers, TopCustomers_Admin)
+admin.site.register(Notification_token, NotificationTokensAdmin)
 admin.site.register(Restaurant_Suggestion,Restaurant_Suggestion_Admin)
 
 

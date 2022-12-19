@@ -20,7 +20,7 @@ from django.contrib.auth.models import update_last_login
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from Register_Login.serializers import LoginSerializer, UserSerializer
+from Register_Login.serializers import LoginSerializer, TokenSerializer, UserSerializer
 from django.http import JsonResponse
 
 
@@ -32,7 +32,7 @@ from X_Eats_nu_distribution import settings
 
 
 # Importing Models
-from Register_Login.models import AccessToken, Events, Profile, Team_Member
+from Register_Login.models import AccessToken, Events, Notification_token, Profile, Push_Notification, Team_Member
 
 # from cart_and_orders.models import Cart
 
@@ -380,3 +380,20 @@ def get_user_by_id(request,email):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+
+# Get Notification token
+@api_view(['GET','POST'])
+def notification_tokens(request):
+    if request.method == 'GET':
+        all = Notification_token.objects.all()
+        serializer = TokenSerializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = TokenSerializer(data= request.data)
+        if Notification_token.objects.filter(token=request.data['token']).exists():
+            return Response('Exist', status = status.HTTP_302_FOUND)
+        else:
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status = status.HTTP_201_CREATED)

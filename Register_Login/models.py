@@ -205,9 +205,16 @@ class Push_Notification(models.Model):
     image = models.ImageField(default='https://x-eats.com/static/images/logo/logo%20-new.png',blank=True,null= True)
     created = models.DateTimeField(auto_now=True)
 
-    
-
     def __str__(self):
         return self.notification_name
     class Meta:
         verbose_name_plural = "Push Notifications"
+
+class Notification_token(models.Model):
+    token = models.CharField(max_length=2500,blank=True,null=True)
+    created = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.token
+    class Meta:
+        verbose_name_plural = "Notification Tokens"

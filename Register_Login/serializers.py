@@ -1,10 +1,16 @@
 from rest_framework import serializers
-from Register_Login.models import Profile
+from Register_Login.models import Profile, Notification_token
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
+        fields = '__all__'
+
+
+class TokenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Notification_token
         fields = '__all__'
 
 
