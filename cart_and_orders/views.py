@@ -271,6 +271,7 @@ def get_cartItems(request):
         return JsonResponse({"Names": serializer.data}, safe=False)
     if request.method == "POST":
         serializer = CartItems_Serializer(data=request.data)
+        
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -289,6 +290,35 @@ def get_user_cartItems(request, email):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+
+# Getting User CartItems to check the same restaurant
+@api_view(["GET", "PUT", "POST"])
+def addingToCart(request,email,id):
+    if request.method == "GET":
+        cartItems_Of_Same_Restaurant = CartItems.objects.filter(user__email=email, Restaurant__id = id, ordered=False)
+        serializer = CartItems_Serializer(cartItems_Of_Same_Restaurant, many=True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+
+    if request.method == "POST":
+        serializer = CartItems_Serializer(data=request.data)
+        if serializer.is_valid():
+            if(request.data['Restaurant'] == id):
+                serializer.save()
+                return Response('Added To Cart cuz Same Rest', status=status.HTTP_200_OK)
+            else:
+                return Response('Cannot add to products from different Rest', status=status.HTTP_403_FORBIDDEN)
+
+    if request.method == "PUT":
+        serializer = CartItems_Serializer(data=request.data)
+        if request.data != None:
+            CartItems.objects.update(
+                quantity=request.data["quantity"],
+                totalOrderItemPrice = request.data["totalOrderItemPrice"]
+            ),
+            return Response(request.data, status=status.HTTP_200_OK)
+        else:
+            return Response('Data is Null', status=status.HTTP_304_NOT_MODIFIED)
 
 
 # Getting Carts

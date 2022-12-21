@@ -41,7 +41,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 class RestaurantAdmin(admin.ModelAdmin):
     prepopulated_fields = {'restaurant_slug': ('Name',), }
-    list_display = ("Name","created")
+    list_display = ("Name","created","id")
     search_fields = ['Name']
 
 class Poster_Admin(admin.ModelAdmin):
