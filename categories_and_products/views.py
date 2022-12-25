@@ -19,7 +19,10 @@ from django.utils import timezone
 import time
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from categories_and_products.serializers import CategorySerializer, ProductsSerializer, RestaurantSerializer,PosterSerializer
+from categories_and_products.serializers import CategorySerializer, ProductsSerializer, RestaurantSerializer,PosterSerializer,SettingsSerializer
+
+
+
 
 
 def index(request):
@@ -462,6 +465,18 @@ def get_poster(request,):
         return JsonResponse({"Names": serializer.data}, safe=False)
     if request.method == 'POST':
         serializer = PosterSerializer(data= request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status = status.HTTP_201_CREATED)
+
+# Getting OrderTiming
+def get_order_timing(request,):
+    if request.method == 'GET':
+        all = Settings.objects.all()
+        serializer = SettingsSerializer(all,many = True)
+        return JsonResponse({"Names": serializer.data}, safe=False)
+    if request.method == 'POST':
+        serializer = SettingsSerializer(data= request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status = status.HTTP_201_CREATED)

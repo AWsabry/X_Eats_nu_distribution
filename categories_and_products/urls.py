@@ -41,6 +41,7 @@ urlpatterns = [
 
 
     path('get_poster/', view=views.get_poster, name='get_poster'),
+    path('get_order_timing/', view=views.get_order_timing, name='get_order_timing'),
     
 
 ]

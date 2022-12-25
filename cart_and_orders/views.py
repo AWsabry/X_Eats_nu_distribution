@@ -22,7 +22,7 @@ from django.http import JsonResponse
 from rest_framework.parsers import JSONParser
 
 
-from categories_and_products.models import Category, PromoCode, Settings
+from categories_and_products.models import Category, PromoCode, Restaurant, Settings
 
 # Create your views here.
 
@@ -288,38 +288,32 @@ def get_user_cartItems(request, email):
     if request.method == "POST":
         serializer = CartItems_Serializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
-# Getting User CartItems to check the same restaurant
-@api_view(["GET", "PUT", "POST"])
-def addingToCart(request,email,id):
-    if request.method == "GET":
-        cartItems_Of_Same_Restaurant = CartItems.objects.filter(user__email=email, Restaurant__id = id, ordered=False)
-        serializer = CartItems_Serializer(cartItems_Of_Same_Restaurant, many=True)
-        return JsonResponse({"Names": serializer.data}, safe=False)
-
-    if request.method == "POST":
-        serializer = CartItems_Serializer(data=request.data)
-        if serializer.is_valid():
-            if(request.data['Restaurant'] == id):
-                serializer.save()
-                return Response('Added To Cart cuz Same Rest', status=status.HTTP_200_OK)
+            cartItems = CartItems.objects.filter(user__email=email, Restaurant__id = request.data['Restaurant'], ordered=False)
+            if CartItems.objects.filter(user__email=email, ordered=False).exists():
+                if cartItems.exists():
+                    if CartItems.objects.filter(user__email=email, Restaurant__id = request.data['Restaurant'],product = request.data['product'] ,ordered=False).exists():
+                        return Response('Same Product Exist in Cart, Check with this Status & Use PUT method', status=status.HTTP_202_ACCEPTED)
+                    else:    
+                        serializer.save()
+                        return Response('Added New Product To Cart from Same Rest', status=status.HTTP_200_OK)
+                else:
+                    return Response('Cannot add to products from different Rest', status=status.HTTP_403_FORBIDDEN)
             else:
-                return Response('Cannot add to products from different Rest', status=status.HTTP_403_FORBIDDEN)
-
+                serializer.save()
+                return Response('Added To Cart cuz No Items in Cart', status=status.HTTP_200_OK)
+    
     if request.method == "PUT":
         serializer = CartItems_Serializer(data=request.data)
-        if request.data != None:
-            CartItems.objects.update(
+        if serializer.is_valid():
+            if CartItems.objects.filter(user__email=email, product = request.data['product'] ,ordered=False).exists():
+                total_price = float(request.data["price"] *  request.data["quantity"])
+                CartItems.objects.filter(user__email=email,id = request.data['id'],product = request.data['product'],ordered=False).update(
                 quantity=request.data["quantity"],
-                totalOrderItemPrice = request.data["totalOrderItemPrice"]
+                totalOrderItemPrice = total_price
             ),
-            return Response(request.data, status=status.HTTP_200_OK)
+                return Response("Updated", status=status.HTTP_200_OK)
         else:
-            return Response('Data is Null', status=status.HTTP_304_NOT_MODIFIED)
-
+            return Response("Data is Null or No Items in Cart", status=status.HTTP_304_NOT_MODIFIED)
 
 # Getting Carts
 @api_view(["GET", "PUT", "DELETE", "POST"])
@@ -360,7 +354,7 @@ def get_carts_by_id(request, email):
         serializer = Cart_Serializer(data=request.data, partial=True)
         print(request.data["total_after_delivery"])
         if request.data != None:
-            Cart.objects.update(
+            Cart.objects.filter(user__email=email).update(
                 total_price=request.data["total_price"],
                 total_after_delivery=request.data["total_after_delivery"],
             ),
