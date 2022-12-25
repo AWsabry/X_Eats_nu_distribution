@@ -47,6 +47,7 @@ class Order(models.Model):
         default=0, verbose_name='After Delivery')
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE,null=True)
     flag = models.CharField(max_length = 250, blank = True, null= True,default="Web")
+    cancelled = models.BooleanField(default=False,blank = True, null= True)
     
     
 

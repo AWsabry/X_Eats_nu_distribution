@@ -292,15 +292,15 @@ def get_user_cartItems(request, email):
             if CartItems.objects.filter(user__email=email, ordered=False).exists():
                 if cartItems.exists():
                     if CartItems.objects.filter(user__email=email, Restaurant__id = request.data['Restaurant'],product = request.data['product'] ,ordered=False).exists():
-                        return Response('Same Product Exist in Cart, Check with this Status & Use PUT method', status=status.HTTP_202_ACCEPTED)
+                        return Response('Updated To Cart', status=status.HTTP_202_ACCEPTED)
                     else:    
                         serializer.save()
-                        return Response('Added New Product To Cart from Same Rest', status=status.HTTP_200_OK)
+                        return Response('Added To Cart', status=status.HTTP_200_OK)
                 else:
-                    return Response('Cannot add to products from different Rest', status=status.HTTP_403_FORBIDDEN)
+                    return Response('Cannot add products from different Rest', status=status.HTTP_403_FORBIDDEN)
             else:
                 serializer.save()
-                return Response('Added To Cart cuz No Items in Cart', status=status.HTTP_200_OK)
+                return Response('Added To Cart', status=status.HTTP_200_OK)
     
     if request.method == "PUT":
         serializer = CartItems_Serializer(data=request.data)
@@ -370,22 +370,41 @@ def get_orders(request):
         all = Order.objects.all()
         serializer = Orders_Serializer(all, many=True)
         return JsonResponse({"Names": serializer.data}, safe=False)
+
+
     if request.method == "POST":
-        serializer = Orders_Serializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response("NO Posting for this endpoint", status=status.HTTP_403_FORBIDDEN)
 
 
-# Getting Orders by Id
+            
+
+# Getting Orders by Email
 @api_view(["GET", "PUT", "POST"])
-def get_orders_by_id(request, id):
+def get_orders_by_email(request, email):
     if request.method == "GET":
-        all = Order.objects.filter(id=id)
+        all = Order.objects.filter(user__email=email)
         serializer = Orders_Serializer(all, many=True)
         return JsonResponse({"Names": serializer.data}, safe=False)
     if request.method == "POST":
         serializer = Orders_Serializer(data=request.data)
+
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            print(request.data['user'])
+            cart = Cart.objects.get(user__email = email)
+            
+            order_sent = serializer.save()
+
+            # Updating the cartItem with the order id that's ordered
+            CartItems.objects.filter(user__email = email, ordered=False,).update(
+            orderId=order_sent.id,)
+            if order_sent:
+                CartItems.objects.filter(user__email = email, orderId=order_sent.id,).update(
+                ordered=True,)
+                Cart.objects.filter(user__email = email).update(
+                    total_price=0, total_after_delivery=10
+                )
+                return Response("Order Created", status=status.HTTP_201_CREATED)
+            else:
+                return Response("Problem Sending Order", status=status.HTTP_403_FORBIDDEN)
+    else:
+        return Response("You are not Posting or Getting")
