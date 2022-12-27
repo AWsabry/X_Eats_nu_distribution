@@ -10,14 +10,15 @@ for i in all_notifications:
     List_of_tokens.append(i)
 print(List_of_tokens)
 
-def sendPush(title,content, registration_token, dataObject=None):
+
+def sendPush(title,content, registration_token,image, dataObject=None):
     
     # See documentation on defining a message payload.
     message = messaging.MulticastMessage(
         notification=messaging.Notification(
             title= title,
             body= content,
-            image= 'https://x-eats.com/static/images/logo/logo%20-new.png',
+            image= str(image),
         ),
         data=dataObject,
         tokens= List_of_tokens
@@ -88,7 +89,7 @@ class pushNotiticationAdmin(admin.ModelAdmin):
     list_display = ('notification_name','title','content','created','id')
 
     def save_model(self, request, obj, form, change):
-        sendPush(obj.title, obj.content, List_of_tokens)
+        sendPush(obj.title, obj.content, obj.image, List_of_tokens)
         obj.save()
 
 
