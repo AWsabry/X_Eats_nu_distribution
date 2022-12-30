@@ -297,7 +297,7 @@ def get_user_cartItems(request, email):
                         serializer.save()
                         return Response('Added To Cart', status=status.HTTP_200_OK)
                 else:
-                    return Response('Cannot add products from different Rest', status=status.HTTP_403_FORBIDDEN)
+                    return Response('Cannot add products from two different Restaurants', status=status.HTTP_403_FORBIDDEN)
             else:
                 serializer.save()
                 return Response('Added To Cart', status=status.HTTP_200_OK)

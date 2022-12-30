@@ -321,17 +321,22 @@ def create_users_API(request):
         serializer = UserSerializer(data= request.data)
         if serializer.is_valid():
             user = Profile.objects.create_user(
-                    email=serializer.validated_data['email'],
-                    first_name=serializer.validated_data['first_name'],
-                    last_name=serializer.validated_data['last_name'],
-                    password=serializer.validated_data['password'],
-                    nu_id=serializer.validated_data['nu_id'],
-                    school=serializer.validated_data['school'],
+                    email=request.data['email'],
+                    first_name=request.data['first_name'],
+                    last_name=request.data['last_name'],
+                    password=request.data['password'],
                     title=serializer.validated_data['title'],
-                    PhoneNumber=serializer.validated_data['PhoneNumber'],
+                    PhoneNumber=request.data['PhoneNumber'],
+                    is_active = True
                 )
-            send_activate_mail(request,user)
-            return Response(serializer.data, status = status.HTTP_201_CREATED)
+            if user:
+                Cart.objects.create(user=user,)
+                return Response("User & Cart are Created Successfully", status = status.HTTP_201_CREATED)
+            else:
+                return Response("Error Creating User", status = status.HTTP_403_FORBIDDEN)
+        else:
+            return Response("Serializer Not Valid", status = status.HTTP_400_BAD_REQUEST)
+
 
 # Login Users
 @csrf_protect
